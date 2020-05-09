@@ -40,9 +40,15 @@ namespace BDWebAPI.Services
 
 
 
-        public IEnumerable<Batch> GetCurrentState()
+        public async Task<IEnumerable<Batch>> GetCurrentState()
         {
-            return _batchRepository.FindAll();
+
+            using (var batchContext = new BatchContext())
+            {
+
+              return  await batchContext.Batches.ToListAsync();
+
+            }
 
         }
 
@@ -105,14 +111,14 @@ namespace BDWebAPI.Services
 
             int abc1 = args.BatchId;
             int abc2 = args.ComputedNumber;
-           
+
 
             var dbBatch = GetBatches(abc1);
 
 
             if (dbBatch != null)
             {
-               
+
                 dbBatch.Total = dbBatch.Total + args.ComputedNumber;
                 dbBatch.TotalRemainingItem = --dbBatch.TotalRemainingItem;
                 dbBatch.TotalProcessedItem = ++dbBatch.TotalProcessedItem;
@@ -204,11 +210,11 @@ namespace BDWebAPI.Services
             using (var batchContext = new BatchContext())
             {
                 batchContext.Entry(batch).State = entityState;
-               
+
 
                 Console.WriteLine("Start SaveBatch...");
 
-                int x =  (batchContext.SaveChanges());
+                int x = (batchContext.SaveChanges());
 
                 Console.WriteLine("Finished SaveBatch...");
             }

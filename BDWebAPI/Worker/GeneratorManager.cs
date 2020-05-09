@@ -17,31 +17,32 @@ namespace BDWebAPI.Worker
         {
             int generatedNumber = -1;
 
-             await Task.Run(() =>
-             {
+            await Task.Run(() =>
+            {
 
-                 for (int i = 1; i <= totalNumberToGenerate; i++)
-                 {
-                     generatedNumber = GenerateNumber();
-                     Task.Delay(5000);
+                for (int i = 1; i <= totalNumberToGenerate; i++)
+                {
+                    generatedNumber = GenerateNumber();
+                    Task.Delay(5000).Wait();
 
-                     ProcessorEventArgs generatorEventArgs = new ProcessorEventArgs
-                     {
-                         BatchId = batchId,
-                         ComputedNumber = generatedNumber
-                     };
-                     OnNumberGeneration(generatorEventArgs);
-                    //delay for 5 sec
-                }
-             });
-            
+
+                    ProcessorEventArgs generatorEventArgs = new ProcessorEventArgs
+                    {
+                        BatchId = batchId,
+                        ComputedNumber = generatedNumber
+                    };
+                    OnNumberGeneration(generatorEventArgs);
+                     //delay for 5 sec
+                 }
+            });
+
         }
 
         void OnNumberGeneration(ProcessorEventArgs generatorEventArgs)
         {
             GeneratorEventHandler?.Invoke(this, generatorEventArgs);
         }
-       
+
 
         private int GenerateNumber()
         {

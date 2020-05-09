@@ -32,72 +32,81 @@ namespace BDWebAPI.Controllers
             _processorService = processorService;
         }
 
-        [HttpGet("/api/batchstate/{groupId:int?}")]
-        public async Task<IActionResult> Get(int? groupId = null)
+        //[HttpGet("/api/batchstate/{groupId:int?}")]
+        //public async Task<IActionResult> Get(int? groupId = null)
+        //{
+        //    try
+        //    {
+
+        //        Batch batch1 = new Batch() { BatchId = 1, Total = 5, TotalProcessedItem = 2, TotalRemainingItem = 3 };
+        //        Batch batch2 = new Batch() { BatchId = 2, Total = 5, TotalProcessedItem = 2, TotalRemainingItem = 3 };
+        //        Batch batch3 = new Batch() { BatchId = 3, Total = 5, TotalProcessedItem = 2, TotalRemainingItem = 3 };
+        //        Batch batch4 = new Batch() { BatchId = 4, Total = 5, TotalProcessedItem = 2, TotalRemainingItem = 3 };
+
+        //        List<Batch> batches = new List<Batch>();
+        //        batches.Add(batch1);
+        //        batches.Add(batch2);
+        //        batches.Add(batch3);
+        //        batches.Add(batch4);
+
+        //        var response = new
+        //        {
+        //            isProcessCompleted = false,
+        //            groupBatchId = 1,
+        //            batchList = batches,
+        //            total = 100
+        //        };
+
+        //        return Ok(response);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logger.LogError($"Something went wrong inside Get action: {ex.Message}");
+        //        return StatusCode(500, "Internal server error");
+        //    }
+        //}
+
+
+
+
+
+
+
+
+
+        [HttpPost("/api/startprocessing")]
+        public async Task PerformeCalculation(BatchInput input)
         {
-            try
-            {
+            await _processorService.PerformeCalculation(input);
 
-                Batch batch1 = new Batch() { BatchId = 1, Total = 5, TotalProcessedItem = 2, TotalRemainingItem = 3 };
-                Batch batch2 = new Batch() { BatchId = 2, Total = 5, TotalProcessedItem = 2, TotalRemainingItem = 3 };
-                Batch batch3 = new Batch() { BatchId = 3, Total = 5, TotalProcessedItem = 2, TotalRemainingItem = 3 };
-                Batch batch4 = new Batch() { BatchId = 4, Total = 5, TotalProcessedItem = 2, TotalRemainingItem = 3 };
 
-                List<Batch> batches = new List<Batch>();
-                batches.Add(batch1);
-                batches.Add(batch2);
-                batches.Add(batch3);
-                batches.Add(batch4);
-
-                var response = new
-                {
-                    isProcessCompleted = false,
-                    groupBatchId = 1,
-                    batchList = batches,
-                    total = 100
-                };
-
-                return Ok(response);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Something went wrong inside Get action: {ex.Message}");
-                return StatusCode(500, "Internal server error");
-            }
         }
 
+        [HttpGet("/api/batchstate")]
+        public async Task<IActionResult> Get()
+        {
+
+           var  batches = await _processorService.GetCurrentState();
+
+            var response = new
+            {
+                isProcessCompleted = batches.Where(data=>data.TotalRemainingItem > 0).FirstOrDefault() != null ? false : true,
+                groupBatchId = 1,
+                batchList = batches,
+                total = 100
+            };
+
+            return Ok(response);
+        }
+
+        [HttpGet("/api/processing")]
+        public async Task PerformeCalculation1()
+        {
+            BatchInput batchInput = new BatchInput() { BatchCount = 2, ItemPerBatch = 2 };
+
+            await _processorService.PerformeCalculation(batchInput);
 
 
-
-    
-
-
-
-
-    [HttpPost("/api/startprocessing")]
-    public async Task PerformeCalculation(BatchInput input)
-    {
-         await _processorService.PerformeCalculation(input);
-
-
+        }
     }
-
-    //[HttpGet("/api/batchstate")]
-    //public IEnumerable<Batch> Get()
-    //{
-
-    //    IEnumerable<Batch> batches= _processorService.GetCurrentState();
-    //    return batches;
-    //}
-
-    [HttpGet("/api/processing")]
-    public async Task PerformeCalculation1()
-    {
-        BatchInput batchInput = new BatchInput() { BatchCount = 2, ItemPerBatch = 2 };
-
-        await _processorService.PerformeCalculation(batchInput);
-
-
-    }
-}
 }
