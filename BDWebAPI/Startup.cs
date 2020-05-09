@@ -40,6 +40,7 @@ namespace BDWebAPI
             //add cors package
             services.AddCors();
 
+            services.AddDbContext<BatchContext>();
 
             services.AddDbContext<RepositoryContext>(context => { context.UseInMemoryDatabase("BDAssessment"); }, ServiceLifetime.Transient);
             services.AddTransient<IBatchRepository, BatchRepository>();

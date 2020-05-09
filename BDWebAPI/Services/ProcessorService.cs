@@ -1,7 +1,9 @@
-﻿using BDWebAPI.ApiContext.Repository;
+﻿using BDWebAPI.ApiContext;
+using BDWebAPI.ApiContext.Repository;
 using BDWebAPI.Models;
 using BDWebAPI.Models.Entities;
 using BDWebAPI.Worker;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,7 +19,7 @@ namespace BDWebAPI.Services
         private readonly IBatchRepository _batchRepository;
 
         public delegate void GeneratorEventHandler(object sender, ProcessorEventArgs generatorEventArgs);
-        public delegate Task MultiplierEventHandler(object sender, ProcessorEventArgs generatorEventArgs);
+        public delegate void MultiplierEventHandler(object sender, ProcessorEventArgs generatorEventArgs);
 
         BatchOutput batchOutput = new BatchOutput();
 
@@ -97,21 +99,56 @@ namespace BDWebAPI.Services
             _multiplierManager.Multiplier(args.BatchId, args.ComputedNumber);
         }
 
-        public async Task MultiplierCallback(object sender, ProcessorEventArgs args)
+        public void MultiplierCallback(object sender, ProcessorEventArgs args)
         {
 
-            await Task.Run(() =>
-             {
-                 int abc1 = args.BatchId;
-                 int abc2 = args.ComputedNumber;
 
-                 Batch existingBatch =  _batchRepository.FindByCondition(x => x.BatchId.Equals(args.BatchId)).Result;
+            int abc1 = args.BatchId;
+            int abc2 = args.ComputedNumber;
+           
+
+            var dbBatch = GetBatches(abc1);
+
+
+            if (dbBatch != null)
+            {
+               
+                dbBatch.Total = dbBatch.Total + args.ComputedNumber;
+                dbBatch.TotalRemainingItem = --dbBatch.TotalRemainingItem;
+                dbBatch.TotalProcessedItem = ++dbBatch.TotalProcessedItem;
+                SaveBatch(dbBatch, EntityState.Modified);
+            }
+            else
+            {
+
+                Batch batch = new Batch()
+                {
+                    BatchId = args.BatchId,
+                    Total = args.ComputedNumber,
+                    TotalRemainingItem = ItemsPerBatch - 1,
+                    TotalProcessedItem = 1
+                };
+                SaveBatch(batch, EntityState.Added);
+            }
+
+            /* using (var batchContext = new BatchContext())
+         {
+
+             try
+             {
+                 //existingBatch =  batchContext.Batches.FirstOrDefaultAsync(x => x.BatchId.Equals(args.BatchId)).Result;
+                 var x = batchContext.Batches;
+                 existingBatch = await (batchContext.Batches.Where(x => x.BatchId.Equals(args.BatchId)).FirstOrDefaultAsync<Batch>());
+
                  if (existingBatch != null)
                  {
                      existingBatch.Total = existingBatch.Total + args.ComputedNumber;
                      existingBatch.TotalRemainingItem = --existingBatch.TotalRemainingItem;
                      existingBatch.TotalProcessedItem = ++existingBatch.TotalProcessedItem;
-                     //_batchRepository.Update(existingBatch);
+
+                     batchContext.Batches.Update(existingBatch);
+                    await batchContext.SaveChangesAsync();
+
                  }
                  else
                  {
@@ -124,17 +161,57 @@ namespace BDWebAPI.Services
                          TotalProcessedItem = 1
                      };
                      batchOutput.BatchList.Add(batch);
-                     _batchRepository.Create(batch);
-
-
+                     batchContext.Batches.Add(batch);
+                     await batchContext.SaveChangesAsync();
                  }
 
-                 _batchRepository.Save();
+                 // Test
+                 x = batchContext.Batches;
+                 existingBatch = await (batchContext.Batches.Where(x => x.BatchId.Equals(args.BatchId)).FirstOrDefaultAsync<Batch>());
+
+             }
+             catch (Exception ex)
+             {
 
 
-             });
+             }
+         }
+*/
 
 
+
+
+
+        }
+
+        private Batch GetBatches(int batchId)
+        {
+            Batch batch = null;
+
+            using (var batchContext = new BatchContext())
+            {
+                var x = batchContext.Batches;
+                batch = batchContext.Batches.Find(batchId);
+
+                Console.WriteLine("Finished Getting Batch...");
+            }
+
+            return batch;
+        }
+
+        private void SaveBatch(Batch batch, EntityState entityState)
+        {
+            using (var batchContext = new BatchContext())
+            {
+                batchContext.Entry(batch).State = entityState;
+               
+
+                Console.WriteLine("Start SaveBatch...");
+
+                int x =  (batchContext.SaveChanges());
+
+                Console.WriteLine("Finished SaveBatch...");
+            }
         }
     }
 }

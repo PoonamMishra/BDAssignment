@@ -14,6 +14,11 @@ namespace BDWebAPI.ApiContext
         
         }
 
+        public RepositoryContext() 
+        {
+
+        }
+
         public DbSet<Batch> Batches { get; set; }
        
     }

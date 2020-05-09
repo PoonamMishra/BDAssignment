@@ -1,13 +1,15 @@
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Runtime.InteropServices;
 
 namespace BDWebAPI.Models.Entities
 {
     public class Batch
     {
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Guid Id { get; set; }
-
+        //[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        //public Guid Id { get; set; }
+        [Key]
         public int BatchId { get; set; }
 
         public int TotalProcessedItem { get; set; }

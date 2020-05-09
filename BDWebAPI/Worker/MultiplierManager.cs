@@ -10,11 +10,10 @@ namespace BDWebAPI.Worker
     public class MultiplierManager : IMultiplierManager
     {
         public event Services.ProcessorService.MultiplierEventHandler MultiplierEventHandler;
-        public async Task Multiplier(int batchId, int number)
+        public void Multiplier(int batchId, int number)
         {
 
-            await Task.Run(() =>
-            {
+            
                 Random randObj = new Random();
                 int randomNo = randObj.Next(2, 4);
                 Task.Delay(5000);
@@ -23,9 +22,7 @@ namespace BDWebAPI.Worker
                 ProcessorEventArgs.BatchId = batchId;
                 ProcessorEventArgs.ComputedNumber = randomNo * number;
                 OnNumberGeneration(ProcessorEventArgs);
-
-            });
-
+           
 
         }
 
