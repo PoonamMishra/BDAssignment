@@ -3,7 +3,7 @@ import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http
 import { Observable, throwError } from 'rxjs';
 import { catchError, tap, map } from 'rxjs/operators';
 
-import { IBatch } from './batch';
+import { IBatchOutput } from './batch';
 import {  HttpResponse } from '@angular/common/http';
 @Injectable({
   providedIn: 'root'
@@ -12,13 +12,26 @@ export class BatchService {
 
   //private batchUrl = 'api/batches.json';
   private batchUrl = 'http://localhost:59933/api/batchstate';
-  allBatches: IBatch[];
+  allBatches: IBatchOutput;
   constructor(private http: HttpClient) { }
 
 
-  getBatches(): Observable<HttpResponse<IBatch[]>> {
-    return  this.http.get<IBatch[]>(
-      this.batchUrl, { observe: 'response' });
+  getBatches(): Observable<IBatchOutput> {
+    let headers = new HttpHeaders({
+          'Content-Type': 'application/json',
+      });
+      let httpOptions = {
+          headers: headers,
+          withCredentials: true,
+      };
+    return  this.http.get<IBatchOutput>(
+      this.batchUrl)
+      .pipe(
+        tap( // Log the result or error
+          data =>console.log(data),
+          error => console.log(error)
+        )
+      );
     
   }
 

@@ -3,8 +3,9 @@ import { interval } from 'rxjs/internal/observable/interval';
 import { startWith, switchMap, takeWhile } from "rxjs/operators";
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { RangeValidator } from '../custom-validators/range.validator';
-import { IBatch } from './batch';
+import { IBatchOutput, IBatch } from './batch';
 import { BatchService } from './batch.service';
+import { timer } from 'rxjs/internal/observable/timer';
 
 
 
@@ -20,54 +21,38 @@ export class BatchComponent implements OnInit, OnDestroy {
 
   batchInputForm: FormGroup;
   submitted = false;
-
   pollingData: any;
   value: any = "";
   pollingFreq: number;
   pollingCount: number;
+  batchList: IBatch[];
+  startButtonClicked= false;
 
 
   constructor(
     private formBuilder: FormBuilder,
     private batchService: BatchService) {
-
-    //this.PollValues();
-    this.getSmartphones();
+   
 
   }
 
 
-  getSmartphones() {
-    this.batchService.getBatches()
-      .subscribe(resp => {
-        console.log(resp);
-        
-
-        for (const data of resp.body) {
-          console.log(data);
-        }
-        
-      });
-  }
+  pollValues(): any {
 
 
-  PollValues(): any {
-    let count = 0;
-    this.pollingData = interval(5000)
+    this.pollingData = timer(0, 3000)
       .pipe(
-        startWith(0),
-        //takeWhile(() => this.alive),
-        switchMap(batch => this.batchService.getBatches() + "s")
+        switchMap(batchOutputResult => this.batchService.getBatches())
       )
       .subscribe(
         res => {
 
           var resu = res;
-          //count += 1;
-          //this.value += count + ",";
-          //if (count > 16) {
-          //  this.pollingData.unsubscribe();
-          //}
+          this.batchList = res.BatchList;
+          if (res.isProcessCompleted) {
+            this.pollingData.unsubscribe();
+          }
+
         },
         error => {
 
@@ -83,6 +68,7 @@ export class BatchComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    this.batchList= [];
     this.pollingData.unsubscribe();
   }
 
@@ -97,10 +83,18 @@ export class BatchComponent implements OnInit, OnDestroy {
     if (this.batchInputForm.invalid) {
       return;
     }
-
+    
     alert('SUCCESS!! :-)\n\n' + JSON.stringify(this.batchInputForm.value))
-
+     this. intiatePolling();
   }
 
+  
+
+  intiatePolling(){
+    this.batchList= [];
+    this.startButtonClicked = true;
+    this.pollValues();
+
+  }
 
 }
