@@ -10,7 +10,7 @@ namespace BDWebAPI.Worker
     {
         event MultiplierEventHandler MultiplierEventHandler;
 
-        void Multiplier(int batchId, int number);
+        Task Multiplier(int batchId, int number);
 
     }
 }

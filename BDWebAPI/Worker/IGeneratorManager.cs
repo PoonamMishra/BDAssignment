@@ -10,7 +10,7 @@ namespace BDWebAPI.Worker
     {
         event GeneratorEventHandler GeneratorEventHandler;
 
-        void Generate(int batchId, int totalNumberToGenerate);
+        Task Generate(int batchId, int totalNumberToGenerate);
 
 
     }

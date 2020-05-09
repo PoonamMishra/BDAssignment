@@ -1,0 +1,67 @@
+<div class="jumbotron">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6 offset-md-3">
+        <h3>Angular 7 Reactive Form Validation</h3>
+        <form [formGroup]="batchInputForm" (ngSubmit)="onSubmit()">
+          <div class="form-group">
+            <label>Batch Size</label>
+            <input type="text" formControlName="batchSize" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.batchSize.errors }" />
+            <div *ngIf="submitted && f.batchSize.errors" class="invalid-feedback">
+              <div *ngIf="f.batchSize.errors.required">Batch size is required</div>
+              <div *ngIf="f.batchSize.errors?.invalidRange">Range should be between 1 and 10</div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Items per batch</label>
+            <input type="text" formControlName="itemsPerBatch" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.itemsPerBatch.errors }" />
+
+            <div *ngIf="submitted && f.itemsPerBatch.errors" class="invalid-feedback">
+              <div *ngIf="f.itemsPerBatch.errors.required">No of items per batch required</div>
+              <div *ngIf="f.itemsPerBatch.errors?.invalidRange">Range should be between 1 and 10</div>
+
+            </div>
+            <div class="form-group">
+              <button [disabled]="!batchInputForm.valid" class="btn btn-primary">Start</button>
+            </div>
+
+            <div>
+              <h1>Angular HTML Table Example</h1>
+              <table>
+                <thead>
+                  <tr>
+                    <th>#ID</th>
+                    <th>Remaining</th>
+                    <th>Processed</th>
+                    <th>Total</th>
+
+                  </tr>
+                </thead>
+                <tbody>
+                  <h1>Polling Value: {{value}}</h1>
+                  <!--<tr *ngFor="let item of ItemsArray">
+    <th>'fisrt'</th>
+    <th>'fisrt'</th>
+    <th>'fisrt'</th>
+    <th>'fisrt'</th>
+    <td>
+      <button type="button">Next Batch</button>
+
+    </td>
+  </tr>-->
+                </tbody>
+              </table>
+            </div>
+
+
+
+
+
+          </div>
+
+
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

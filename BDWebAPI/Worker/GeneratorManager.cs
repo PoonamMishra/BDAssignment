@@ -1,30 +1,39 @@
 ﻿using BDWebAPI.Models;
+using BDWebAPI.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Threading.Tasks;
-using static BDWebAPI.Services.ProcessorService;
+
 
 namespace BDWebAPI.Worker
 {
     public class GeneratorManager : IGeneratorManager
     {
-        public event GeneratorEventHandler GeneratorEventHandler;
+        public event ProcessorService.GeneratorEventHandler GeneratorEventHandler;
 
-        public void Generate(int batchId, int totalNumberToGenerate)
+        public async Task Generate(int batchId, int totalNumberToGenerate)
         {
             int generatedNumber = -1;
 
-            for (int i = 1; i <= totalNumberToGenerate; i++)
-            {
-                generatedNumber = GenerateNumber();
+             await Task.Run(() =>
+             {
 
-                ProcessorEventArgs generatorEventArgs = new ProcessorEventArgs();
-                generatorEventArgs.BatchId = batchId;
-                generatorEventArgs.ComputedNumber = generatedNumber;
-                OnNumberGeneration(generatorEventArgs);
-                //delay for 5 sec
-            }
+                 for (int i = 1; i <= totalNumberToGenerate; i++)
+                 {
+                     generatedNumber = GenerateNumber();
+                     Task.Delay(5000);
+
+                     ProcessorEventArgs generatorEventArgs = new ProcessorEventArgs
+                     {
+                         BatchId = batchId,
+                         ComputedNumber = generatedNumber
+                     };
+                     OnNumberGeneration(generatorEventArgs);
+                    //delay for 5 sec
+                }
+             });
             
         }
 

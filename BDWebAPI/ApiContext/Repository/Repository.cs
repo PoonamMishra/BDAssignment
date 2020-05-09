@@ -16,24 +16,30 @@ namespace BDWebAPI.ApiContext.Repository
             this.RepositoryContext = repositoryContext;
         }
 
+
         public IQueryable<T> FindAll()
         {
             return this.RepositoryContext.Set<T>().AsNoTracking();
         }
 
-        public IQueryable<T> FindByCondition(Expression<Func<T, bool>> expression)
+        public async Task<T> FindByCondition(Expression<Func<T, bool>> expression)
         {
-            return this.RepositoryContext.Set<T>().Where(expression).AsNoTracking();
+            return await this.RepositoryContext.Set<T>().Where(expression).FirstOrDefaultAsync();
         }
 
-        public void Create(T entity)
+        //public void Create(T entity)
+        //{
+        //    this.RepositoryContext.Set<T>().Add(entity);
+        //}
+
+        public async Task Create(T entity)
         {
-            this.RepositoryContext.Set<T>().Add(entity);
+            await this.RepositoryContext.Set<T>().AddAsync(entity);
         }
 
         public void Update(T entity)
         {
-            this.RepositoryContext.Set<T>().Update(entity);
+           this.RepositoryContext.Set<T>().Update(entity);
         }
 
         public void Delete(T entity)
@@ -41,9 +47,9 @@ namespace BDWebAPI.ApiContext.Repository
             this.RepositoryContext.Set<T>().Remove(entity);
         }
 
-        public void Save()
+        public async Task Save()
         {
-            this.RepositoryContext.SaveChanges();
+           await this.RepositoryContext.SaveChangesAsync();
         }
     }
 }

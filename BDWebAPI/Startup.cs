@@ -30,10 +30,19 @@ namespace BDWebAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            //remove default json formatting
+            services.AddControllers().AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.PropertyNamingPolicy = null;
+                options.JsonSerializerOptions.DictionaryKeyPolicy = null;
+            });
 
-            services.AddDbContext<RepositoryContext>(context => { context.UseInMemoryDatabase("BDAssessment"); });
-            services.AddScoped<IBatchRepository, BatchRepository>();
+            //add cors package
+            services.AddCors();
+
+
+            services.AddDbContext<RepositoryContext>(context => { context.UseInMemoryDatabase("BDAssessment"); }, ServiceLifetime.Transient);
+            services.AddTransient<IBatchRepository, BatchRepository>();
             services.AddTransient<IProcessorService, ProcessorService>();
             services.AddTransient<IGeneratorManager, GeneratorManager>();
             services.AddTransient<IMultiplierManager, MultiplierManager>();
@@ -47,6 +56,12 @@ namespace BDWebAPI
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            //configurations to cosume the Web API from port : 4200 (Angualr App)
+            app.UseCors(options =>
+            options.WithOrigins("http://localhost:4200")
+            .AllowAnyMethod()
+            .AllowAnyHeader());
 
             using (var serviceScope = app.ApplicationServices.CreateScope())
             {

@@ -17,7 +17,7 @@ namespace BDWebAPI.Services
         private readonly IBatchRepository _batchRepository;
 
         public delegate void GeneratorEventHandler(object sender, ProcessorEventArgs generatorEventArgs);
-        public delegate void MultiplierEventHandler(object sender, ProcessorEventArgs generatorEventArgs);
+        public delegate Task MultiplierEventHandler(object sender, ProcessorEventArgs generatorEventArgs);
 
         BatchOutput batchOutput = new BatchOutput();
 
@@ -73,17 +73,21 @@ namespace BDWebAPI.Services
             return "This will calcuate the result";
         }
 
-        public string PerformeCalculation(BatchInput input)
+        public async Task PerformeCalculation(BatchInput input)
         {
             ItemsPerBatch = input.BatchCount;
 
             for (int batchNo = 1; batchNo <= input.BatchCount; batchNo++)
             {
-                _generatorManager.Generate(batchNo, input.ItemPerBatch);
+                await Task.Run(() =>
+                {
+                    int id = Task.CurrentId.Value;
+                    return _generatorManager.Generate(batchNo, input.ItemPerBatch);
+                });
 
             }
 
-            return string.Empty;
+
         }
 
         public void GeneratorCallback(object sender, ProcessorEventArgs args)
@@ -93,41 +97,44 @@ namespace BDWebAPI.Services
             _multiplierManager.Multiplier(args.BatchId, args.ComputedNumber);
         }
 
-        public void MultiplierCallback(object sender, ProcessorEventArgs args)
+        public async Task MultiplierCallback(object sender, ProcessorEventArgs args)
         {
 
-            string data = "nuber generated";
-            int abc1 = args.BatchId;
-            int abc2 = args.ComputedNumber;
+            await Task.Run(() =>
+             {
+                 int abc1 = args.BatchId;
+                 int abc2 = args.ComputedNumber;
 
-            Batch existingBatch = batchOutput.BatchList.Where(x => x.BatchId.Equals(args.BatchId)).FirstOrDefault();
-            if (existingBatch != null)
-            {
-                existingBatch.Total = existingBatch.Total + args.ComputedNumber;
-                existingBatch.TotalRemainingItem = --existingBatch.TotalRemainingItem;
-                existingBatch.TotalProcessedItem = ++existingBatch.TotalProcessedItem;
-                _batchRepository.Update(existingBatch);
-            }
-            else
-            {
+                 Batch existingBatch =  _batchRepository.FindByCondition(x => x.BatchId.Equals(args.BatchId)).Result;
+                 if (existingBatch != null)
+                 {
+                     existingBatch.Total = existingBatch.Total + args.ComputedNumber;
+                     existingBatch.TotalRemainingItem = --existingBatch.TotalRemainingItem;
+                     existingBatch.TotalProcessedItem = ++existingBatch.TotalProcessedItem;
+                     //_batchRepository.Update(existingBatch);
+                 }
+                 else
+                 {
 
-                Batch batch = new Batch()
-                {
-                    BatchId = args.BatchId,
-                    Total = args.ComputedNumber,
-                    TotalRemainingItem = ItemsPerBatch - 1,
-                    TotalProcessedItem = 1
-                };
-                batchOutput.BatchList.Add(batch);
-                _batchRepository.Create(batch);
+                     Batch batch = new Batch()
+                     {
+                         BatchId = args.BatchId,
+                         Total = args.ComputedNumber,
+                         TotalRemainingItem = ItemsPerBatch - 1,
+                         TotalProcessedItem = 1
+                     };
+                     batchOutput.BatchList.Add(batch);
+                     _batchRepository.Create(batch);
 
 
-            }
+                 }
 
-            _batchRepository.Save();
+                 _batchRepository.Save();
+
+
+             });
+
 
         }
-
-
     }
 }

@@ -31,57 +31,60 @@ namespace BDWebAPI.Controllers
             _processorService = processorService;
         }
 
-        //[HttpGet("/api/batchstate")]
-        //public BatchOutput Get1()
-        //{
-
-        //    Batch batch1 = new Batch() { BatchId = 1, Total = 5, TotalProcessedItem = 2, TotalRemainingItem = 3 };
-        //    Batch batch2 = new Batch() { BatchId = 2, Total = 5, TotalProcessedItem = 2, TotalRemainingItem = 3 };
-        //    Batch batch3 = new Batch() { BatchId = 3, Total = 5, TotalProcessedItem = 2, TotalRemainingItem = 3 };
-        //    Batch batch4 = new Batch() { BatchId = 4, Total = 5, TotalProcessedItem = 2, TotalRemainingItem = 3 };
-
-        //    List<Batch> batches = new List<Batch>();
-        //    batches.Add(batch1);
-        //    batches.Add(batch2);
-        //    batches.Add(batch3);
-        //    batches.Add(batch4);
-
-        //    BatchOutput batchOutput = new BatchOutput()
-        //    {
-        //        GroupBatchId = 1,
-        //        BatchList = batches,
-        //        Total = 100
-        //    };
-
-        //    return batchOutput;
-
-
-
-        //}
-
-        
         [HttpGet("/api/batchstate")]
-        public IEnumerable<Batch> Get()
+        public BatchOutput Get()
         {
 
-            IEnumerable<Batch> batches= _processorService.GetCurrentState();
-            return batches;
+            Batch batch1 = new Batch() { BatchId = 1, Total = 5, TotalProcessedItem = 2, TotalRemainingItem = 3 };
+            Batch batch2 = new Batch() { BatchId = 2, Total = 5, TotalProcessedItem = 2, TotalRemainingItem = 3 };
+            Batch batch3 = new Batch() { BatchId = 3, Total = 5, TotalProcessedItem = 2, TotalRemainingItem = 3 };
+            Batch batch4 = new Batch() { BatchId = 4, Total = 5, TotalProcessedItem = 2, TotalRemainingItem = 3 };
+
+            List<Batch> batches = new List<Batch>();
+            batches.Add(batch1);
+            batches.Add(batch2);
+            batches.Add(batch3);
+            batches.Add(batch4);
+
+            BatchOutput batchOutput = new BatchOutput()
+            {
+                isProcessCompleted = false,
+                GroupBatchId = 1,
+                BatchList = batches,
+                Total = 100
+            };
+
+            return batchOutput;
+
+
+
         }
 
+
+
+
         [HttpPost("/api/startprocessing")]
-        public string PerformeCalculation(BatchInput input)
+        public Task PerformeCalculation(BatchInput input)
         {
             return _processorService.PerformeCalculation(input);
 
 
         }
 
+        //[HttpGet("/api/batchstate")]
+        //public IEnumerable<Batch> Get()
+        //{
+
+        //    IEnumerable<Batch> batches= _processorService.GetCurrentState();
+        //    return batches;
+        //}
+
         [HttpGet("/api/processing")]
-        public string PerformeCalculation1()
+        public async Task PerformeCalculation1()
         {
             BatchInput batchInput = new BatchInput() { BatchCount = 2, ItemPerBatch = 2 };
 
-            return _processorService.PerformeCalculation(batchInput);
+             await _processorService.PerformeCalculation(batchInput);
 
 
         }

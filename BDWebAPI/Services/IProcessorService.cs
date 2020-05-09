@@ -13,6 +13,6 @@ namespace BDWebAPI.Services
 
         public IEnumerable<Batch> GetCurrentState();
 
-        String PerformeCalculation(BatchInput input);
+        Task PerformeCalculation(BatchInput input);
     }
 }

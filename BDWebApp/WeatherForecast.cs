@@ -1,6 +1,6 @@
 using System;
 
-namespace BDAsyncServiceAssessment
+namespace BDWebApp
 {
     public class WeatherForecast
     {
