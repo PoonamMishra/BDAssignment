@@ -82,8 +82,8 @@ namespace BDWebAPI.Controllers
 
         }
 
-        [HttpGet("/api/batchstate")]
-        public async Task<IActionResult> Get()
+        [HttpGet("/api/batchstate/{groupId:int?}")]
+        public async Task<IActionResult> Get([FromQuery]int? groupId = null)
         {
 
            var  batches = await _processorService.GetCurrentState();
