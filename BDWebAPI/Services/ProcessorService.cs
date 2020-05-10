@@ -87,9 +87,9 @@ namespace BDWebAPI.Services
 
             List<int> integerList = Enumerable.Range(1, input.BatchSize).ToList();
 
-            Parallel.ForEach(integerList, i =>
+            Parallel.ForEach(integerList, async i =>
             {
-                _generatorManager.Generate(i, input.ItemsPerBatch);
+               await _generatorManager.Generate(i, input.ItemsPerBatch);
             });
 
 
