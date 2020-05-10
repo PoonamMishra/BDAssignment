@@ -48,7 +48,7 @@ export class BatchService {
     
     
     var postData = {
-      'batchCount': +param.batchSize, 'itemsPerBatch': +param.itemsPerBatch
+      'batchSize': +param.batchSize, 'itemsPerBatch': +param.itemsPerBatch
     };  
  
 

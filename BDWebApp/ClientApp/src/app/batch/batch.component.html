@@ -47,14 +47,13 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <!--<h1>Polling Value: {{value}}</h1>-->
-                  {{poonam}}
+                                  
                   <tr *ngFor="let item of batchList">
                     {{hello}}
-                    <th>{{item.BatchId}}</th>
-                    <th>{{item.TotalRemainingItem}}</th>
-                    <th>{{item.TotalProcessedItem}}</th>
-                    <th>{{item.Total}}</th>
+                    <td>{{item.BatchId}}</td>
+                    <td>{{item.TotalRemainingItem}}</td>
+                    <td>{{item.TotalProcessedItem}}</td>
+                    <td>{{item.Total}}</td>
 
                   </tr>
                 </tbody>
