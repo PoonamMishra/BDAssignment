@@ -12,7 +12,7 @@ namespace BDWebAPI.Worker
         public event Services.ProcessorService.MultiplierEventHandler MultiplierEventHandler;
         public void Multiplier(int batchId, int number)
         {
-            int randNum = new Random().Next(2, 4);
+            int randNum = new Random().Next(2, 5);
             ProcessorEventArgs ProcessorEventArgs = new ProcessorEventArgs();
 
             ProcessorEventArgs.BatchId = batchId;

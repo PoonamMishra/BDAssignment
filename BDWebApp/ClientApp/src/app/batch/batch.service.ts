@@ -1,89 +1,81 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
-import { catchError, tap, map } from 'rxjs/operators';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { catchError, tap } from 'rxjs/operators';
+import { Observable } from 'rxjs/internal/Observable';
+import { of } from 'rxjs/internal/observable/of';
 
-import { IBatchOutput } from './batch';
-import {  HttpResponse } from '@angular/common/http';
+import { IBatchOutput, IBatch } from './batch';
+
+
 @Injectable({
   providedIn: 'root'
 })
+
 export class BatchService {
 
-  //private batchUrl = 'api/batches.json';
-  private batchUrl = 'http://localhost:59933/api/batchstate';
+
+  private getBatchesUrl = 'http://localhost:59933/api/batch/state';
+  private processBatchUrl = 'http://localhost:59933/api/batch/processing';
+  first: number;
+  secong:number;
+
   allBatches: IBatchOutput;
   constructor(private http: HttpClient) { }
 
 
-  getBatches(): Observable<IBatchOutput> {
-    let headers = new HttpHeaders({
-          'Content-Type': 'application/json',
-      });
-      let httpOptions = {
-          headers: headers,
-          withCredentials: true,
-      };
-    return  this.http.get<IBatchOutput>(
-      this.batchUrl)
+
+  getBatches(param: any): Observable<IBatchOutput> {
+
+    const httpOptions =
+      new HttpHeaders({ 'Content-Type': 'application/json' });
+
+    const params = new HttpParams()
+      .set('batchSize', param.batchSize);
+
+    return this.http.get<IBatchOutput>(
+      this.getBatchesUrl, { headers: httpOptions, params: params })
       .pipe(
         tap( // Log the result or error
-          data =>console.log(data),
-          error => console.log(error)
-        )
-      );
-    
-
-
-
-      
+          data =>  console.log(data),
+          catchError(this.handleError<IBatch>("get batches"))));
   }
 
-  //getBatches(): Observable<IBatch[]> {
+
+  processBatch(param: any): Observable<any> {    
+
+    const headers: HttpHeaders = new  HttpHeaders();
+    headers.set('Content-Type', 'application/x-www-form-urlencoded');
+    
+    
+    var postData = {
+      'batchCount': +param.batchSize, 'itemsPerBatch': +param.itemsPerBatch
+    };  
+ 
+
+    return this.http.post<any>(this.processBatchUrl, postData, { headers: headers }).pipe(
+      tap(data => console.log(data),
+        catchError(this.handleError<IBatch>("process batch"))));
 
 
+  }
 
 
-  //  var result = this.http.get<IBatch[]>(this.batchUrl)
-  //    .pipe(
-  //      tap(data => {
-  //        console.log('All: ' + JSON.stringify(data));
-  //        this.allBatches = data
-  //      },
+  private handleError<T>(operation = 'operation', result?: T) {
+    return (error: any): Observable<T> => {
 
-  //        catchError(this.handleError))
-  //  );
-  //  return result;
-  //}
+      // TODO: send the error to remote logging infrastructure
+      console.error(error); // log to console instead
 
-  //getBatches(): Observable<IBatch[]> {
+      // TODO: better job of transforming error for user consumption
+      this.log(`${operation} failed: ${error.message}`);
 
-  //  return this.http.get<IBatch[]>
-  //    (this.batchUrl).pipe(tap(res => this.allBatches = res))
-  //} 
+      // Let the app keep running by returning an empty result.
+      return of(result as T);
+    };
+  }
 
-
-
-  //getProduct(id: number): Observable<IProduct | undefined> {
-  //  return this.getProducts()
-  //    .pipe(
-  //      map((products: IProduct[]) => products.find(p => p.productId === id))
-  //    );
-  //}
-
-  private handleError(err: HttpErrorResponse) {
-    // in a real world app, we may send the server to some remote logging infrastructure
-    // instead of just logging it to the console
-    let errorMessage = '';
-    if (err.error instanceof ErrorEvent) {
-      // A client-side or network error occurred. Handle it accordingly.
-      errorMessage = `An error occurred: ${err.error.message}`;
-    } else {
-      // The backend returned an unsuccessful response code.
-      // The response body may contain clues as to what went wrong,
-      errorMessage = `Server returned code: ${err.status}, error message is: ${err.message}`;
-    }
-    console.error(errorMessage);
-    return throwError(errorMessage);
+  /** Log a HeroService message with the MessageService */
+  private log(message: string) {
+    console.log(`Batch Service: ${message}`);
   }
 }

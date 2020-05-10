@@ -31,7 +31,7 @@
           </div>
           </div>
             <div class="form-group">
-              <button [disabled]="!batchInputForm.valid" class="btn btn-primary">Start</button>
+              <button [disabled]="disableStart()" class="btn btn-primary">Start</button>
             </div>
          
             <div class="container">
@@ -52,11 +52,11 @@
                   <tr *ngFor="let item of batchList">
                     {{hello}}
                     <th>{{item.BatchId}}</th>
-                    <th>{{item.TotalProcessedItem}}</th>
                     <th>{{item.TotalRemainingItem}}</th>
+                    <th>{{item.TotalProcessedItem}}</th>
                     <th>{{item.Total}}</th>
-                      
-                    </tr>
+
+                  </tr>
                 </tbody>
               </table>
             </div>

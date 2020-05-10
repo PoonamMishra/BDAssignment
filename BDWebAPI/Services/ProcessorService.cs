@@ -46,7 +46,7 @@ namespace BDWebAPI.Services
             using (var batchContext = new BatchContext())
             {
 
-              return  await batchContext.Batches.ToListAsync();
+                return await batchContext.Batches.ToListAsync();
 
             }
 
@@ -83,17 +83,16 @@ namespace BDWebAPI.Services
 
         public async Task PerformeCalculation(BatchInput input)
         {
-            ItemsPerBatch = input.BatchCount;
+            ItemsPerBatch = input.ItemsPerBatch;
 
-            for (int batchNo = 1; batchNo <= input.BatchCount; batchNo++)
+            List<int> integerList = Enumerable.Range(1, input.BatchSize).ToList();
+
+            Parallel.ForEach(integerList, i =>
             {
-                await Task.Run(() =>
-                {
-                    int id = Task.CurrentId.Value;
-                    return _generatorManager.Generate(batchNo, input.ItemPerBatch);
-                });
+                _generatorManager.Generate(i, input.ItemsPerBatch);
+            });
 
-            }
+
 
 
         }
@@ -101,7 +100,6 @@ namespace BDWebAPI.Services
         public void GeneratorCallback(object sender, ProcessorEventArgs args)
         {
 
-            string data = "nuber generated";
             _multiplierManager.Multiplier(args.BatchId, args.ComputedNumber);
         }
 
@@ -109,11 +107,12 @@ namespace BDWebAPI.Services
         {
 
 
-            int abc1 = args.BatchId;
-            int abc2 = args.ComputedNumber;
+
+            int batchId = args.BatchId;
 
 
-            var dbBatch = GetBatches(abc1);
+
+            var dbBatch = GetBatches(args.BatchId);
 
 
             if (dbBatch != null)
@@ -137,52 +136,6 @@ namespace BDWebAPI.Services
                 SaveBatch(batch, EntityState.Added);
             }
 
-            /* using (var batchContext = new BatchContext())
-         {
-
-             try
-             {
-                 //existingBatch =  batchContext.Batches.FirstOrDefaultAsync(x => x.BatchId.Equals(args.BatchId)).Result;
-                 var x = batchContext.Batches;
-                 existingBatch = await (batchContext.Batches.Where(x => x.BatchId.Equals(args.BatchId)).FirstOrDefaultAsync<Batch>());
-
-                 if (existingBatch != null)
-                 {
-                     existingBatch.Total = existingBatch.Total + args.ComputedNumber;
-                     existingBatch.TotalRemainingItem = --existingBatch.TotalRemainingItem;
-                     existingBatch.TotalProcessedItem = ++existingBatch.TotalProcessedItem;
-
-                     batchContext.Batches.Update(existingBatch);
-                    await batchContext.SaveChangesAsync();
-
-                 }
-                 else
-                 {
-
-                     Batch batch = new Batch()
-                     {
-                         BatchId = args.BatchId,
-                         Total = args.ComputedNumber,
-                         TotalRemainingItem = ItemsPerBatch - 1,
-                         TotalProcessedItem = 1
-                     };
-                     batchOutput.BatchList.Add(batch);
-                     batchContext.Batches.Add(batch);
-                     await batchContext.SaveChangesAsync();
-                 }
-
-                 // Test
-                 x = batchContext.Batches;
-                 existingBatch = await (batchContext.Batches.Where(x => x.BatchId.Equals(args.BatchId)).FirstOrDefaultAsync<Batch>());
-
-             }
-             catch (Exception ex)
-             {
-
-
-             }
-         }
-*/
 
 
 
@@ -197,7 +150,7 @@ namespace BDWebAPI.Services
             using (var batchContext = new BatchContext())
             {
                 var x = batchContext.Batches;
-                batch = batchContext.Batches.Find(batchId);
+                batch = batchContext.Batches.Where(batc => batc.BatchId.Equals(batchId)).FirstOrDefault();
 
                 Console.WriteLine("Finished Getting Batch...");
             }

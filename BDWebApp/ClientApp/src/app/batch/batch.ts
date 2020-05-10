@@ -10,5 +10,5 @@ export interface IBatch {
 export interface IBatchOutput extends IBatch{ 
 
   isProcessCompleted?: boolean,
-  BatchList: IBatch[]
+  batchList: IBatch[]
 }

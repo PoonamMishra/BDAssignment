@@ -16,7 +16,7 @@ namespace BDWebAPI.Worker
         public async Task Generate(int batchId, int totalNumberToGenerate)
         {
             int generatedNumber = -1;
-
+           
             await Task.Run(() =>
             {
 
@@ -25,16 +25,15 @@ namespace BDWebAPI.Worker
                     generatedNumber = GenerateNumber();
                     Task.Delay(5000).Wait();
 
-
                     ProcessorEventArgs generatorEventArgs = new ProcessorEventArgs
                     {
                         BatchId = batchId,
                         ComputedNumber = generatedNumber
                     };
                     OnNumberGeneration(generatorEventArgs);
-                     //delay for 5 sec
-                 }
+                }
             });
+
 
         }
 
@@ -47,7 +46,7 @@ namespace BDWebAPI.Worker
         private int GenerateNumber()
         {
             Random randObj = new Random();
-            return randObj.Next(1, 10);
+            return randObj.Next(1, 101);
         }
     }
 }

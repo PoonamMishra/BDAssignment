@@ -26,38 +26,18 @@ export class BatchComponent implements OnInit, OnDestroy {
   pollingFreq: number;
   pollingCount: number;
   batchList: IBatch[];
-  startButtonClicked= false;
+  startButtonClicked = false;
+  isProcessCompleted = false;
+
+  currentGroupId: number = 1;
+  PreviousGroupId: number = 0;
 
 
   constructor(
     private formBuilder: FormBuilder,
     private batchService: BatchService) {
-   
-
-  }
 
 
-  pollValues(): any {
-
-
-    this.pollingData = timer(0, 3000)
-      .pipe(
-        switchMap(batchOutputResult => this.batchService.getBatches())
-      )
-      .subscribe(
-        res => {
-
-          var resu = res;
-          this.batchList = res.BatchList;
-          if (res.isProcessCompleted) {
-            this.pollingData.unsubscribe();
-          }
-
-        },
-        error => {
-
-        }
-      );
   }
 
   ngOnInit() {
@@ -67,8 +47,44 @@ export class BatchComponent implements OnInit, OnDestroy {
     });
   }
 
+
+  disableStart(): boolean {
+    return !this.batchInputForm.valid && !this.isProcessCompleted
+  }
+
+  pollValues(): any {
+
+    //let params  = { groupId: this.currentGroupId, batchSize: this.batchInputForm.get('batchSize').value };
+
+    let params = { batchSize: this.batchInputForm.get('batchSize').value };
+
+    this.pollingData = timer(0, 3000)
+      .pipe(
+        switchMap(batchOutputResult => this.batchService.getBatches(params))
+      )
+      .subscribe(
+        res => {
+          this.batchList = res.batchList;
+          if (res.isProcessCompleted) {
+            this.isProcessCompleted = true;
+            this.pollingData.unsubscribe();
+
+          }
+
+        },
+        error => {
+          console.log("Error", error);
+        }
+      );
+  }
+
+
+
+
+
+
   ngOnDestroy() {
-    this.batchList= [];
+    this.batchList = [];
     this.pollingData.unsubscribe();
   }
 
@@ -83,15 +99,39 @@ export class BatchComponent implements OnInit, OnDestroy {
     if (this.batchInputForm.invalid) {
       return;
     }
+
+    //alert('SUCCESS!! :-)\n\n' + JSON.stringify(this.batchInputForm.value))
+    this.processBatch();
+    this.pollValues();
+
     
-    alert('SUCCESS!! :-)\n\n' + JSON.stringify(this.batchInputForm.value))
-     this. intiatePolling();
+  }
+ 
+
+  processBatch() {
+       
+
+    let params = {
+      batchSize: this.batchInputForm.get('batchSize').value,
+      itemsPerBatch: this.batchInputForm.get('itemsPerBatch').value
+    };
+   
+    this.batchService.processBatch(params)
+      .subscribe(
+        data => {
+          console.log("Process Request is successful ", data);
+        },
+        error => {
+          console.log("Error", error);
+
+        }
+
+      );
+
   }
 
-  
-
-  intiatePolling(){
-    this.batchList= [];
+  intiatePolling() {
+    this.batchList = [];
     this.startButtonClicked = true;
     this.pollValues();
 
