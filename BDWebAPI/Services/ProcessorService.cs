@@ -24,6 +24,8 @@ namespace BDWebAPI.Services
 
         BatchOutput batchOutput = new BatchOutput();
 
+        static readonly object pblock = new object();
+
         int ItemsPerBatch = 0;
 
         public static int GroupId { get; set; } = 0;
@@ -133,34 +135,35 @@ namespace BDWebAPI.Services
 
         public void MultiplierCallback(object sender, ProcessorEventArgs args)
         {
-
-
-            var dbBatch = GetBatches(args.BatchId);
-
-
-            if (dbBatch != null)
+            lock (pblock)
             {
 
-                dbBatch.Total = dbBatch.Total + args.ComputedNumber;
-                dbBatch.TotalRemainingItem = --dbBatch.TotalRemainingItem;
-                dbBatch.TotalProcessedItem = ++dbBatch.TotalProcessedItem;
-                SaveBatch(dbBatch, EntityState.Modified);
-            }
-            else
-            {
+                var dbBatch = GetBatches(args.BatchId);
 
-                Batch batch = new Batch()
+
+                if (dbBatch != null)
                 {
-                    GroupId = GroupId,
-                    BatchId = args.BatchId,
-                    Total = args.ComputedNumber,
-                    TotalRemainingItem = ItemsPerBatch - 1,
-                    TotalProcessedItem = 1
-                };
-                SaveBatch(batch, EntityState.Added);
+
+                    dbBatch.Total = dbBatch.Total + args.ComputedNumber;
+                    dbBatch.TotalRemainingItem = --dbBatch.TotalRemainingItem;
+                    dbBatch.TotalProcessedItem = ++dbBatch.TotalProcessedItem;
+                    SaveBatch(dbBatch, EntityState.Modified);
+                }
+                else
+                {
+
+                    Batch batch = new Batch()
+                    {
+                        GroupId = GroupId,
+                        BatchId = args.BatchId,
+                        Total = args.ComputedNumber,
+                        TotalRemainingItem = ItemsPerBatch - 1,
+                        TotalProcessedItem = 1
+                    };
+                    SaveBatch(batch, EntityState.Added);
+                }
+
             }
-
-
 
         }
 

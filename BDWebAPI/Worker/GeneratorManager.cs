@@ -15,25 +15,33 @@ namespace BDWebAPI.Worker
 
         public async Task Generate(int batchId, int totalNumberToGenerate)
         {
-            int generatedNumber = -1;
            
-            await Task.Run(() =>
+            var myTask = new List<Task>();
+            IEnumerable<int> integerList = Enumerable.Range(1, totalNumberToGenerate).ToList();
+
+            Parallel.ForEach(integerList, i =>
             {
-
-                for (int i = 1; i <= totalNumberToGenerate; i++)
-                {
-                    generatedNumber = GenerateNumber();
-                    Task.Delay(5000).Wait();
-
-                    ProcessorEventArgs generatorEventArgs = new ProcessorEventArgs
-                    {
-                        BatchId = batchId,
-                        ComputedNumber = generatedNumber
-                    };
-                    OnNumberGeneration(generatorEventArgs);
-                }
+                myTask.Add(GetGenerateNumberTask(batchId));
             });
 
+            await Task.WhenAll(myTask);
+        }
+
+        private Task GetGenerateNumberTask(int batchId)
+        {
+            return Task.Run(() =>
+             {
+                 int generatedNumber = GenerateNumber();
+                 Task.Delay(5000).Wait();
+
+                 ProcessorEventArgs generatorEventArgs = new ProcessorEventArgs
+                 {
+                     BatchId = batchId,
+                     ComputedNumber = generatedNumber
+                 };
+                 OnNumberGeneration(generatorEventArgs);
+
+             });
 
         }
 

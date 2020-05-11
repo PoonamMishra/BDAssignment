@@ -35,18 +35,18 @@ namespace BDWebAPI.Controllers
         }
 
 
-        //[HttpGet("/api/batch/processing")]
-        //public async Task<IActionResult> PerformeCalculation1()
-        //{
-        //    BatchInput input = new BatchInput
-        //    {
-        //        BatchSize = 5,
-        //        ItemsPerBatch = 7
-        //    };
+        [HttpGet("/api/batch/processing")]
+        public async Task<IActionResult> PerformeCalculation1()
+        {
+            BatchInput input = new BatchInput
+            {
+                BatchSize = 5,
+                ItemsPerBatch = 7
+            };
 
-        //    await _processorService.PerformeCalculation(input);
-        //    return NoContent();
-        //}
+            await _processorService.PerformeCalculation(input);
+            return NoContent();
+        }
 
 
         [HttpPost("/api/batch/processing")]

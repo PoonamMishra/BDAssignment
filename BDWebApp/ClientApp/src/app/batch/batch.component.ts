@@ -28,7 +28,7 @@ export class BatchComponent implements OnInit, OnDestroy {
   pollingCount: number;
   batchList: IBatch[];
   startButtonClicked = false;
-  isProcessCompleted = false;
+  isProcessCompleted = true;
 
   currentGroupId: number = 1;
   PreviousGroupId: number = 0;
@@ -63,7 +63,7 @@ export class BatchComponent implements OnInit, OnDestroy {
   }
 
   disableStart(): boolean {
-    return (!this.batchInputForm.valid && !this.isProcessCompleted);
+    return (!this.batchInputForm.valid || !this.isProcessCompleted);
   }
 
 
@@ -101,8 +101,8 @@ export class BatchComponent implements OnInit, OnDestroy {
   }
 
   toggleButtonText() {
-
-    return (this.submitted === false && this.isProcessCompleted === false) || this.isProcessCompleted === true ? 'Start' : 'Processing';
+    return this.isProcessCompleted === true ? 'Start' : 'Processing';
+        
   }
 
   onPreviousAction() {
@@ -144,6 +144,7 @@ export class BatchComponent implements OnInit, OnDestroy {
     if (this.batchInputForm.invalid) {
       return;
     }
+    this.isProcessCompleted = false;
     this.batchList = [];
     this.batchInputForm.get('batchSize')
     this.processBatch();
