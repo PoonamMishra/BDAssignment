@@ -57,6 +57,18 @@ namespace BDWebAPI.Services
 
         }
 
+        public async Task<IEnumerable<Batch>> GetAllBAtches()
+        {
+           
+            using (var batchContext = new BatchContext())
+            {
+
+                return await batchContext.Batches.ToListAsync();
+
+            }
+
+        }
+
 
         public async Task<IEnumerable<Batch>> GetPreviousBatch()
         {
@@ -98,7 +110,7 @@ namespace BDWebAPI.Services
             IsProcessCompleted = false;
 
             IEnumerable<int> integerList = Enumerable.Range(1, input.BatchSize).ToList();
-            ++GroupId;
+            GroupId++;
             var myTask = new List<Task>();
 
             Parallel.ForEach(integerList, i =>

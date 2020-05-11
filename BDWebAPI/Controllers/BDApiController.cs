@@ -92,6 +92,16 @@ namespace BDWebAPI.Controllers
         }
 
 
+        [HttpGet("/api/batch/batches")]
+        public async Task<IActionResult> GetAllBatches()
+        {
+
+            var batches = await _processorService.GetAllBAtches();            
+
+            return Ok(batches);
+        }
+
+
         [HttpGet("/api/batch/previous/{batchSize:int?}")]
         public async Task<IActionResult> GetPreviousBatch([FromQuery]int? batchSize = null)
         {

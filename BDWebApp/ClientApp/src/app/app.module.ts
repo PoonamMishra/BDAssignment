@@ -9,6 +9,7 @@ import { NavMenuComponent } from './nav-menu/nav-menu.component';
 import { FetchDataComponent } from './fetch-data/fetch-data.component';
 import { BatchComponent } from './batch/batch.component';
 import { PreviousBatchComponent } from './batch/previous.batch.component';
+import { BatchDetailsComponent } from './batch/batch-details.component';
 
 
 @NgModule({
@@ -17,7 +18,8 @@ import { PreviousBatchComponent } from './batch/previous.batch.component';
     NavMenuComponent,
     FetchDataComponent,
     BatchComponent,
-    PreviousBatchComponent
+    PreviousBatchComponent,
+    BatchDetailsComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),

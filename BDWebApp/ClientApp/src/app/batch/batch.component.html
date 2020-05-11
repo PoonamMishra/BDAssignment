@@ -36,7 +36,7 @@
       </div>
       <div class="form-group">
         
-        <button (click)="previousBatchClick($event)" class="btn btn-primary">Show Previous Batch</button>
+        <button [disabled]="enablePreviousBatch()" (click)="onPreviousAction()" class="btn btn-primary">Show Previous Batch</button>
       </div>
 
       <app-batch-details-component [batchList]=batchList></app-batch-details-component>

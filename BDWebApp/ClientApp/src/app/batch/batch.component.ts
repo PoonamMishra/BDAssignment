@@ -6,6 +6,7 @@ import { RangeValidator } from '../custom-validators/range.validator';
 import { IBatchOutput, IBatch } from './batch';
 import { BatchService } from './batch.service';
 import { timer } from 'rxjs/internal/observable/timer';
+import { Router } from '@angular/router';
 
 
 
@@ -35,7 +36,8 @@ export class BatchComponent implements OnInit, OnDestroy {
 
   constructor(
     private formBuilder: FormBuilder,
-    private batchService: BatchService) {
+    private batchService: BatchService,
+    private router: Router) {
 
 
   }
@@ -51,6 +53,12 @@ export class BatchComponent implements OnInit, OnDestroy {
   disableStart(): boolean {
     return (!this.batchInputForm.valid && !this.isProcessCompleted);
   }
+
+
+  enablePreviousBatch(): boolean {
+    return !this.isProcessCompleted;
+  }
+
 
   pollValues(): any {
 
@@ -84,28 +92,12 @@ export class BatchComponent implements OnInit, OnDestroy {
     return (this.submitted === false && this.isProcessCompleted === false) || this.isProcessCompleted === true ? 'Start' : 'Processing';
   }
 
-  
+  onPreviousAction() {
+    this.router.navigate(['/previous-batch'])
+      .then(success => console.log('navigation success?', success))
+      .catch(console.error);
+  } 
 
-  previousBatchClick() {
-
-    this.batchService.getPreviousBatches()     
-      .subscribe(
-        res => {
-          this.batchList = res.batchList;
-          if (res.isProcessCompleted) {
-            this.submitted = false;
-            this.isProcessCompleted = true;
-            this.pollingData.unsubscribe();
-
-          }
-
-        },
-        error => {
-          console.log("Error", error);
-        }
-      );
-
-  }
 
 
 
@@ -125,8 +117,8 @@ export class BatchComponent implements OnInit, OnDestroy {
     if (this.batchInputForm.invalid) {
       return;
     }
+    this.batchList = [];
     this.batchInputForm.get('batchSize')
-    //alert('SUCCESS!! :-)\n\n' + JSON.stringify(this.batchInputForm.value))
     this.processBatch();
     this.pollValues();
 

@@ -24,6 +24,8 @@ C:\Poonam\BDAsyncServiceAssessment\BDWebAPI\bin\Debug\netcoreapp3.1\Microsoft.Ex
 C:\Poonam\BDAsyncServiceAssessment\BDWebAPI\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Options.dll
 C:\Poonam\BDAsyncServiceAssessment\BDWebAPI\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Primitives.dll
 C:\Poonam\BDAsyncServiceAssessment\BDWebAPI\obj\Debug\netcoreapp3.1\BDWebAPI.csprojAssemblyReference.cache
+C:\Poonam\BDAsyncServiceAssessment\BDWebAPI\obj\Debug\netcoreapp3.1\BDWebAPI.csproj.CoreCompileInputs.cache
+C:\Poonam\BDAsyncServiceAssessment\BDWebAPI\obj\Debug\netcoreapp3.1\BDWebAPI.MvcApplicationPartsAssemblyInfo.cache
 C:\Poonam\BDAsyncServiceAssessment\BDWebAPI\obj\Debug\netcoreapp3.1\BDWebAPI.AssemblyInfoInputs.cache
 C:\Poonam\BDAsyncServiceAssessment\BDWebAPI\obj\Debug\netcoreapp3.1\BDWebAPI.AssemblyInfo.cs
 C:\Poonam\BDAsyncServiceAssessment\BDWebAPI\obj\Debug\netcoreapp3.1\BDWebAPI.RazorTargetAssemblyInfo.cache
@@ -33,5 +35,3 @@ C:\Poonam\BDAsyncServiceAssessment\BDWebAPI\obj\Debug\netcoreapp3.1\staticwebass
 C:\Poonam\BDAsyncServiceAssessment\BDWebAPI\obj\Debug\netcoreapp3.1\BDWebAPI.dll
 C:\Poonam\BDAsyncServiceAssessment\BDWebAPI\obj\Debug\netcoreapp3.1\BDWebAPI.pdb
 C:\Poonam\BDAsyncServiceAssessment\BDWebAPI\obj\Debug\netcoreapp3.1\BDWebAPI.genruntimeconfig.cache
-C:\Poonam\BDAsyncServiceAssessment\BDWebAPI\obj\Debug\netcoreapp3.1\BDWebAPI.csproj.CoreCompileInputs.cache
-C:\Poonam\BDAsyncServiceAssessment\BDWebAPI\obj\Debug\netcoreapp3.1\BDWebAPI.MvcApplicationPartsAssemblyInfo.cache

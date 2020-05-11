@@ -16,5 +16,6 @@ namespace BDWebAPI.Services
         Task<IEnumerable<Batch>> GetPreviousBatch();
 
         Task PerformeCalculation(BatchInput input);
+        Task<IEnumerable<Batch>> GetAllBAtches();
     }
 }
