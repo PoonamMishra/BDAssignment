@@ -26,7 +26,7 @@ namespace BDWebAPI.Controllers
         private readonly ILogger<BDApiController> _logger;
         private readonly IProcessorService _processorService;
 
-       
+
 
         public BDApiController(ILogger<BDApiController> logger, IProcessorService processorService)
         {
@@ -34,7 +34,7 @@ namespace BDWebAPI.Controllers
             _processorService = processorService;
         }
 
-        
+
         //[HttpGet("/api/batch/processing")]
         //public async Task<IActionResult> PerformeCalculation1()
         //{
@@ -76,7 +76,7 @@ namespace BDWebAPI.Controllers
         [HttpGet("/api/batch/state/{batchSize:int?}")]
         public async Task<IActionResult> Get([FromQuery]int? batchSize = null)
         {
-            
+
 
             var batches = await _processorService.GetCurrentState();
 
@@ -96,24 +96,21 @@ namespace BDWebAPI.Controllers
         public async Task<IActionResult> GetAllBatches()
         {
 
-            var batches = await _processorService.GetAllBAtches();            
+            var batches = await _processorService.GetAllBAtches();
 
             return Ok(batches);
         }
 
 
-        [HttpGet("/api/batch/previous/{batchSize:int?}")]
-        public async Task<IActionResult> GetPreviousBatch([FromQuery]int? batchSize = null)
+        [HttpGet("/api/batch/previous")]
+        public async Task<IActionResult> GetPreviousBatch()
         {
 
-            var batches = await _processorService.GetPreviousBatch();        
+            var batches = await _processorService.GetPreviousBatch();
 
             var response = new
             {
-                isProcessCompleted = true,
-                groupId = 1,
-                batchList = batches,
-                total = 100
+                batchList = batches
             };
 
             return Ok(response);

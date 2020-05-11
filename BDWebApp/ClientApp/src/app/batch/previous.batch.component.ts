@@ -43,8 +43,8 @@ export class PreviousBatchComponent  {
 
     this.batchService.getPreviousBatches()
       .subscribe(
-        res => {
-          this.batchList = res.batchList;         
+        prevBatch => {
+          this.batchList = prevBatch.batchList;         
 
         },
         error => {

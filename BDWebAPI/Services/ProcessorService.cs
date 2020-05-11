@@ -26,7 +26,7 @@ namespace BDWebAPI.Services
 
         int ItemsPerBatch = 0;
 
-        public static int GroupId { get; set; } = 1;
+        public static int GroupId { get; set; } = 0;
         public static bool IsProcessCompleted { get; set; } = false;
 
         public ProcessorService(IGeneratorManager generatorManager,
