@@ -32,6 +32,7 @@ export class BatchComponent implements OnInit, OnDestroy {
 
   currentGroupId: number = 1;
   PreviousGroupId: number = 0;
+  showPreviousBatch = false;
 
 
   constructor(
@@ -47,8 +48,19 @@ export class BatchComponent implements OnInit, OnDestroy {
       batchSize: ['', [Validators.required, RangeValidator.validateRange]],
       itemsPerBatch: ['', [Validators.required, RangeValidator.validateRange]]
     });
+
+    this.getCurrentGroupId();
+
+   
   }
 
+
+
+  setShowPreviousBatch(groupId) {
+    if (groupId >= 2) {
+      this.showPreviousBatch = true;
+    }
+  }
 
   disableStart(): boolean {
     return (!this.batchInputForm.valid && !this.isProcessCompleted);
@@ -79,7 +91,8 @@ export class BatchComponent implements OnInit, OnDestroy {
             this.pollingData.unsubscribe();
 
           }
-
+          this.setShowPreviousBatch(res.currentGroupId)
+        
         },
         error => {
           console.log("Error", error);
@@ -99,11 +112,25 @@ export class BatchComponent implements OnInit, OnDestroy {
   } 
 
 
+  getCurrentGroupId() {
+    this.batchService.getCurrentGroupId()
+      .subscribe(
+        groupId => {
+          this.currentGroupId = groupId;
+          this.setShowPreviousBatch(this.setShowPreviousBatch(this.currentGroupId))
+        },
+        error => {
+          console.log("Error", error);
+        }
+      );
 
+  }
 
   ngOnDestroy() {
     this.batchList = [];
-    this.pollingData.unsubscribe();
+    if (this.pollingData != null) {
+      this.pollingData.unsubscribe();
+    }
   }
 
   // convenience getter for easy access to form fields

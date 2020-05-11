@@ -17,10 +17,8 @@ export class BatchService {
   private getCurrentBatchUrl = 'http://localhost:59933/api/batch/state';
   private processBatchUrl = 'http://localhost:59933/api/batch/processing';
   private getPreviousBatchUrl = 'http://localhost:59933/api/batch/previous';
+  private getCurrentGroupIdUrl = 'http://localhost:59933/api/batch/currentgroupid';
 
-
-  first: number;
-  secong: number;
 
   allBatches: IBatchOutput;
   constructor(private http: HttpClient) { }
@@ -42,6 +40,22 @@ export class BatchService {
           data => console.log(data),
           catchError(this.handleError<IBatch>("get batches"))));
   }
+
+
+
+  getCurrentGroupId(): Observable<number> {
+
+    const httpOptions =
+      new HttpHeaders({ 'Content-Type': 'application/json' });
+
+    return this.http.get<number>(
+      this.getCurrentGroupIdUrl, { headers: httpOptions })
+      .pipe(
+        tap( // Log the result or error
+          data => console.log(data),
+          catchError(this.handleError<IBatch>("current batch id"))));
+  }
+
 
 
 

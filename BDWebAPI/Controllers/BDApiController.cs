@@ -83,7 +83,7 @@ namespace BDWebAPI.Controllers
             var response = new
             {
                 isProcessCompleted = ProcessorService.IsProcessCompleted,
-                groupId = 1,
+                currentGroupId = ProcessorService.GroupId,
                 batchList = batches,
                 total = 100
             };
@@ -91,6 +91,12 @@ namespace BDWebAPI.Controllers
             return Ok(response);
         }
 
+
+        [HttpGet("/api/batch/currentgroupid")]
+        public int GetCurrentGroupId()
+        {
+            return ProcessorService.GroupId;
+        }
 
         [HttpGet("/api/batch/batches")]
         public async Task<IActionResult> GetAllBatches()

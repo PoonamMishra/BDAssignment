@@ -12,16 +12,14 @@ import { IBatch } from './batch';
 export class BatchDetailsComponent {
 
   @Input() batchList: IBatch[];
+
   total: number;
 
 
   getTotal() {
 
-    this.total = 0;
-    if (this.batchList.length !== 0) {
-      this.total = this.batchList.reduce((subtotal, item) => subtotal + item.total, 0)
-    }
-    return this.total;
+    return this.batchList.reduce((subtotal, item) => subtotal + item["Total"], 0)
+   
   }
 
 }
