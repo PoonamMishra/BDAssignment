@@ -5,6 +5,7 @@ using BDWebAPI.Models.Entities;
 using BDWebAPI.Worker;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -25,6 +26,9 @@ namespace BDWebAPI.Services
 
         int ItemsPerBatch = 0;
 
+        public static int GroupId { get; set; } = 1;
+        public static bool IsProcessCompleted { get; set; } = false;
+
         public ProcessorService(IGeneratorManager generatorManager,
             IMultiplierManager multiplierManager,
             IBatchRepository batchRepository)
@@ -40,16 +44,23 @@ namespace BDWebAPI.Services
 
 
 
-        public async Task<IEnumerable<Batch>> GetCurrentState()
+        public async Task<IEnumerable<Batch>> GetCurrentState(int? groupId = null)
         {
+            groupId = groupId == null ? GroupId : groupId;
 
             using (var batchContext = new BatchContext())
             {
 
-                return await batchContext.Batches.ToListAsync();
+                return await batchContext.Batches.Where(batch => batch.GroupId.Equals(groupId)).ToListAsync();
 
             }
 
+        }
+
+
+        public async Task<IEnumerable<Batch>> GetPreviousBatch()
+        {
+            return await GetCurrentState(GroupId - 1);
         }
 
 
@@ -84,18 +95,23 @@ namespace BDWebAPI.Services
         public async Task PerformeCalculation(BatchInput input)
         {
             ItemsPerBatch = input.ItemsPerBatch;
+            IsProcessCompleted = false;
 
-            List<int> integerList = Enumerable.Range(1, input.BatchSize).ToList();
+            IEnumerable<int> integerList = Enumerable.Range(1, input.BatchSize).ToList();
+            ++GroupId;
+            var myTask = new List<Task>();
 
-            Parallel.ForEach(integerList, async i =>
-            {
-               await _generatorManager.Generate(i, input.ItemsPerBatch);
-            });
+            Parallel.ForEach(integerList, i =>
+                {
+                    myTask.Add(_generatorManager.Generate(i, input.ItemsPerBatch));
+                });
 
-
-
+            await Task.WhenAll(myTask).ContinueWith(res => IsProcessCompleted = true);
 
         }
+
+
+
 
         public void GeneratorCallback(object sender, ProcessorEventArgs args)
         {
@@ -105,11 +121,6 @@ namespace BDWebAPI.Services
 
         public void MultiplierCallback(object sender, ProcessorEventArgs args)
         {
-
-
-
-            int batchId = args.BatchId;
-
 
 
             var dbBatch = GetBatches(args.BatchId);
@@ -128,6 +139,7 @@ namespace BDWebAPI.Services
 
                 Batch batch = new Batch()
                 {
+                    GroupId = GroupId,
                     BatchId = args.BatchId,
                     Total = args.ComputedNumber,
                     TotalRemainingItem = ItemsPerBatch - 1,
@@ -135,9 +147,6 @@ namespace BDWebAPI.Services
                 };
                 SaveBatch(batch, EntityState.Added);
             }
-
-
-
 
 
 
@@ -150,7 +159,7 @@ namespace BDWebAPI.Services
             using (var batchContext = new BatchContext())
             {
                 var x = batchContext.Batches;
-                batch = batchContext.Batches.Where(batc => batc.BatchId.Equals(batchId)).FirstOrDefault();
+                batch = batchContext.Batches.Where(batc => batc.BatchId.Equals(batchId) && batc.GroupId.Equals(GroupId)).FirstOrDefault();
 
                 Console.WriteLine("Finished Getting Batch...");
             }

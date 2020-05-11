@@ -8,6 +8,7 @@ import { AppComponent } from './app.component';
 import { NavMenuComponent } from './nav-menu/nav-menu.component';
 import { FetchDataComponent } from './fetch-data/fetch-data.component';
 import { BatchComponent } from './batch/batch.component';
+import { PreviousBatchComponent } from './batch/previous.batch.component';
 
 
 @NgModule({
@@ -15,7 +16,8 @@ import { BatchComponent } from './batch/batch.component';
     AppComponent,
     NavMenuComponent,
     FetchDataComponent,
-    BatchComponent
+    BatchComponent,
+    PreviousBatchComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -24,8 +26,9 @@ import { BatchComponent } from './batch/batch.component';
     ReactiveFormsModule,
     RouterModule.forRoot([
       { path: '', component: BatchComponent, pathMatch: 'full' },
-      { path: 'fetch-data', component: FetchDataComponent },
       { path: 'batch', component: BatchComponent },
+      { path: 'previous-batch', component: PreviousBatchComponent },
+     
     ])
   ],
   providers: [],

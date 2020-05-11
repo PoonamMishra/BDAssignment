@@ -11,7 +11,9 @@ namespace BDWebAPI.Services
     {
         BatchOutput GetCurrentState1();
 
-         Task<IEnumerable<Batch>> GetCurrentState();
+        Task<IEnumerable<Batch>> GetCurrentState(int? groupId = null);
+
+        Task<IEnumerable<Batch>> GetPreviousBatch();
 
         Task PerformeCalculation(BatchInput input);
     }

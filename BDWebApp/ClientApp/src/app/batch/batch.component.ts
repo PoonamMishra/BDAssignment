@@ -49,7 +49,7 @@ export class BatchComponent implements OnInit, OnDestroy {
 
 
   disableStart(): boolean {
-    return !this.batchInputForm.valid && !this.isProcessCompleted
+    return (!this.batchInputForm.valid && !this.isProcessCompleted);
   }
 
   pollValues(): any {
@@ -66,6 +66,7 @@ export class BatchComponent implements OnInit, OnDestroy {
         res => {
           this.batchList = res.batchList;
           if (res.isProcessCompleted) {
+            this.submitted = false;
             this.isProcessCompleted = true;
             this.pollingData.unsubscribe();
 
@@ -78,8 +79,33 @@ export class BatchComponent implements OnInit, OnDestroy {
       );
   }
 
+  toggleButtonText() {
 
+    return (this.submitted === false && this.isProcessCompleted === false) || this.isProcessCompleted === true ? 'Start' : 'Processing';
+  }
 
+  
+
+  previousBatchClick() {
+
+    this.batchService.getPreviousBatches()     
+      .subscribe(
+        res => {
+          this.batchList = res.batchList;
+          if (res.isProcessCompleted) {
+            this.submitted = false;
+            this.isProcessCompleted = true;
+            this.pollingData.unsubscribe();
+
+          }
+
+        },
+        error => {
+          console.log("Error", error);
+        }
+      );
+
+  }
 
 
 
@@ -99,7 +125,7 @@ export class BatchComponent implements OnInit, OnDestroy {
     if (this.batchInputForm.invalid) {
       return;
     }
-
+    this.batchInputForm.get('batchSize')
     //alert('SUCCESS!! :-)\n\n' + JSON.stringify(this.batchInputForm.value))
     this.processBatch();
     this.pollValues();

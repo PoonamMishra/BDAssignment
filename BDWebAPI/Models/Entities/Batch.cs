@@ -9,6 +9,9 @@ namespace BDWebAPI.Models.Entities
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
+
+        public int GroupId { get; set; }
+
         public int BatchId { get; set; }
 
         public int TotalProcessedItem { get; set; }

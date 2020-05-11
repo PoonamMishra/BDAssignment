@@ -14,10 +14,13 @@ import { IBatchOutput, IBatch } from './batch';
 export class BatchService {
 
 
-  private getBatchesUrl = 'http://localhost:59933/api/batch/state';
+  private getCurrentBatchUrl = 'http://localhost:59933/api/batch/state';
   private processBatchUrl = 'http://localhost:59933/api/batch/processing';
+  private getPreviousBatchUrl = 'http://localhost:59933/api/batch/previous';
+
+
   first: number;
-  secong:number;
+  secong: number;
 
   allBatches: IBatchOutput;
   constructor(private http: HttpClient) { }
@@ -33,24 +36,41 @@ export class BatchService {
       .set('batchSize', param.batchSize);
 
     return this.http.get<IBatchOutput>(
-      this.getBatchesUrl, { headers: httpOptions, params: params })
+      this.getCurrentBatchUrl, { headers: httpOptions, params: params })
       .pipe(
         tap( // Log the result or error
-          data =>  console.log(data),
+          data => console.log(data),
           catchError(this.handleError<IBatch>("get batches"))));
   }
 
 
-  processBatch(param: any): Observable<any> {    
 
-    const headers: HttpHeaders = new  HttpHeaders();
+  getPreviousBatches(): Observable<IBatchOutput> {
+
+    const httpOptions =
+      new HttpHeaders({ 'Content-Type': 'application/json' });
+
+    return this.http.get<IBatchOutput>(
+      this.getPreviousBatchUrl, { headers: httpOptions })
+      .pipe(
+        tap( // Log the result or error
+          data => console.log(data),
+          catchError(this.handleError<IBatch>("get previous batches"))));
+  }
+
+
+
+
+  processBatch(param: any): Observable<any> {
+
+    const headers: HttpHeaders = new HttpHeaders();
     headers.set('Content-Type', 'application/x-www-form-urlencoded');
-    
-    
+
+
     var postData = {
       'batchSize': +param.batchSize, 'itemsPerBatch': +param.itemsPerBatch
-    };  
- 
+    };
+
 
     return this.http.post<any>(this.processBatchUrl, postData, { headers: headers }).pipe(
       tap(data => console.log(data),

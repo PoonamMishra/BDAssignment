@@ -26,6 +26,8 @@ namespace BDWebAPI.Controllers
         private readonly ILogger<BDApiController> _logger;
         private readonly IProcessorService _processorService;
 
+       
+
         public BDApiController(ILogger<BDApiController> logger, IProcessorService processorService)
         {
             _logger = logger;
@@ -74,16 +76,13 @@ namespace BDWebAPI.Controllers
         [HttpGet("/api/batch/state/{batchSize:int?}")]
         public async Task<IActionResult> Get([FromQuery]int? batchSize = null)
         {
+            
 
             var batches = await _processorService.GetCurrentState();
 
-            //bool chkProgress = batches.Count() != 0 && 
-            //                          batches.Count() == batchSize &&
-            //                          batches.Where(data => data.TotalRemainingItem > 0).FirstOrDefault() != null;
-
             var response = new
             {
-                isProcessCompleted = false,
+                isProcessCompleted = ProcessorService.IsProcessCompleted,
                 groupId = 1,
                 batchList = batches,
                 total = 100
@@ -92,6 +91,24 @@ namespace BDWebAPI.Controllers
             return Ok(response);
         }
 
-      
+
+        [HttpGet("/api/batch/previous/{batchSize:int?}")]
+        public async Task<IActionResult> GetPreviousBatch([FromQuery]int? batchSize = null)
+        {
+
+            var batches = await _processorService.GetPreviousBatch();        
+
+            var response = new
+            {
+                isProcessCompleted = true,
+                groupId = 1,
+                batchList = batches,
+                total = 100
+            };
+
+            return Ok(response);
+        }
+
+
     }
 }
