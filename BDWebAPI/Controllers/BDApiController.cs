@@ -18,10 +18,6 @@ namespace BDWebAPI.Controllers
     [Route("[controller]")]
     public class BDApiController : ControllerBase
     {
-        private static readonly string[] Summaries = new[]
-        {
-            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-        };
 
         private readonly ILogger<BDApiController> _logger;
         private readonly IProcessorService _processorService;
@@ -73,8 +69,8 @@ namespace BDWebAPI.Controllers
             }
         }
 
-        [HttpGet("/api/batch/state/{batchSize:int?}")]
-        public async Task<IActionResult> Get([FromQuery]int? batchSize = null)
+        [HttpGet("/api/batch/state")]
+        public async Task<IActionResult> Get()
         {
 
 
@@ -84,8 +80,7 @@ namespace BDWebAPI.Controllers
             {
                 isProcessCompleted = ProcessorService.IsProcessCompleted,
                 currentGroupId = ProcessorService.GroupId,
-                batchList = batches,
-                total = 100
+                batchList = batches
             };
 
             return Ok(response);
@@ -102,7 +97,7 @@ namespace BDWebAPI.Controllers
         public async Task<IActionResult> GetAllBatches()
         {
 
-            var batches = await _processorService.GetAllBAtches();
+            var batches = await _processorService.GetAllBatches();
 
             return Ok(batches);
         }

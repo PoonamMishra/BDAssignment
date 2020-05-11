@@ -13,11 +13,11 @@ namespace BDWebAPI.Worker
         public void Multiplier(int batchId, int number)
         {
             int randNum = new Random().Next(2, 5);
-            ProcessorEventArgs ProcessorEventArgs = new ProcessorEventArgs();
-
-            ProcessorEventArgs.BatchId = batchId;
-            ProcessorEventArgs.ComputedNumber = randNum * number;
-
+            ProcessorEventArgs ProcessorEventArgs = new ProcessorEventArgs
+            {
+                BatchId = batchId,
+                ComputedNumber = randNum * number
+            };
 
             Task b = Task.Delay(5000);
             b.Wait();

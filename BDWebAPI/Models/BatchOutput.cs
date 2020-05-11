@@ -16,7 +16,7 @@ namespace BDWebAPI.Models
 
         public int Total { get; set; }
 
-        public bool isProcessCompleted { get; set; }
+        public bool IsProcessCompleted { get; set; }
 
     }
 }

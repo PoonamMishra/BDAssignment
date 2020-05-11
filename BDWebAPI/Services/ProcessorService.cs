@@ -4,6 +4,7 @@ using BDWebAPI.Models;
 using BDWebAPI.Models.Entities;
 using BDWebAPI.Worker;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -18,11 +19,11 @@ namespace BDWebAPI.Services
         private readonly IGeneratorManager _generatorManager;
         private readonly IMultiplierManager _multiplierManager;
         private readonly IBatchRepository _batchRepository;
+        private readonly ILogger<ProcessorService> _logger;
 
         public delegate void GeneratorEventHandler(object sender, ProcessorEventArgs generatorEventArgs);
         public delegate void MultiplierEventHandler(object sender, ProcessorEventArgs generatorEventArgs);
 
-        BatchOutput batchOutput = new BatchOutput();
 
         static readonly object pblock = new object();
 
@@ -33,12 +34,14 @@ namespace BDWebAPI.Services
 
         public ProcessorService(IGeneratorManager generatorManager,
             IMultiplierManager multiplierManager,
-            IBatchRepository batchRepository)
+            IBatchRepository batchRepository,
+            ILogger<ProcessorService> logger)
         {
 
             _generatorManager = generatorManager;
             _multiplierManager = multiplierManager;
             _batchRepository = batchRepository;
+            _logger = logger;
 
             _generatorManager.GeneratorEventHandler += GeneratorCallback;
             _multiplierManager.MultiplierEventHandler += MultiplierCallback;
@@ -50,24 +53,16 @@ namespace BDWebAPI.Services
         {
             groupId = groupId == null ? GroupId : groupId;
 
-            using (var batchContext = new BatchContext())
-            {
-
-                return await batchContext.Batches.Where(batch => batch.GroupId.Equals(groupId)).ToListAsync();
-
-            }
+            using var batchContext = new BatchContext();
+            return await batchContext.Batches.Where(batch => batch.GroupId.Equals(groupId)).OrderBy(ord => ord.BatchId).ToListAsync();
 
         }
 
-        public async Task<IEnumerable<Batch>> GetAllBAtches()
+        public async Task<IEnumerable<Batch>> GetAllBatches()
         {
-           
-            using (var batchContext = new BatchContext())
-            {
 
-                return await batchContext.Batches.ToListAsync();
-
-            }
+            using var batchContext = new BatchContext();
+            return await batchContext.Batches.OrderBy(ord => ord.BatchId).ToListAsync();
 
         }
 
@@ -75,35 +70,6 @@ namespace BDWebAPI.Services
         public async Task<IEnumerable<Batch>> GetPreviousBatch()
         {
             return await GetCurrentState(GroupId - 1);
-        }
-
-
-        public BatchOutput GetCurrentState1()
-        {
-            Batch batch1 = new Batch() { BatchId = 1, Total = 5, TotalProcessedItem = 2, TotalRemainingItem = 3 };
-            Batch batch2 = new Batch() { BatchId = 2, Total = 5, TotalProcessedItem = 2, TotalRemainingItem = 3 };
-            Batch batch3 = new Batch() { BatchId = 3, Total = 5, TotalProcessedItem = 2, TotalRemainingItem = 3 };
-            Batch batch4 = new Batch() { BatchId = 4, Total = 5, TotalProcessedItem = 2, TotalRemainingItem = 3 };
-
-            List<Batch> batches = new List<Batch>();
-            batches.Add(batch1);
-            batches.Add(batch2);
-            batches.Add(batch3);
-            batches.Add(batch4);
-
-            BatchOutput batchOutput = new BatchOutput()
-            {
-                GroupBatchId = 1,
-                BatchList = batches,
-                Total = 100
-            };
-
-            return batchOutput;
-        }
-
-        public string PerformeCalculation()
-        {
-            return "This will calcuate the result";
         }
 
         public async Task PerformeCalculation(BatchInput input)
@@ -144,7 +110,7 @@ namespace BDWebAPI.Services
                 if (dbBatch != null)
                 {
 
-                    dbBatch.Total = dbBatch.Total + args.ComputedNumber;
+                    dbBatch.Total += args.ComputedNumber;
                     dbBatch.TotalRemainingItem = --dbBatch.TotalRemainingItem;
                     dbBatch.TotalProcessedItem = ++dbBatch.TotalProcessedItem;
                     SaveBatch(dbBatch, EntityState.Modified);
@@ -176,7 +142,7 @@ namespace BDWebAPI.Services
                 var x = batchContext.Batches;
                 batch = batchContext.Batches.Where(batc => batc.BatchId.Equals(batchId) && batc.GroupId.Equals(GroupId)).FirstOrDefault();
 
-                Console.WriteLine("Finished Getting Batch...");
+                _logger.LogDebug("Finished Getting Batch...");
             }
 
             return batch;
@@ -184,17 +150,15 @@ namespace BDWebAPI.Services
 
         private void SaveBatch(Batch batch, EntityState entityState)
         {
-            using (var batchContext = new BatchContext())
-            {
-                batchContext.Entry(batch).State = entityState;
+            using var batchContext = new BatchContext();
+            batchContext.Entry(batch).State = entityState;
+
+            _logger.LogDebug("Start SaveBatch...");
 
 
-                Console.WriteLine("Start SaveBatch...");
+            int x = (batchContext.SaveChanges());
 
-                int x = (batchContext.SaveChanges());
-
-                Console.WriteLine("Finished SaveBatch...");
-            }
+            _logger.LogDebug("Finished SaveBatch...");
         }
     }
 }
