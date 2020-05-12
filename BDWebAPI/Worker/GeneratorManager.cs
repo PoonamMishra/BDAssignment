@@ -1,5 +1,6 @@
 ﻿using BDWebAPI.Models;
 using BDWebAPI.Services;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +12,13 @@ namespace BDWebAPI.Worker
 {
     public class GeneratorManager : IGeneratorManager
     {
+        private readonly ILogger<GeneratorManager> _logger;
+
+        public GeneratorManager(ILogger<GeneratorManager> logger)
+        {
+            _logger = logger;
+        }
+
         public event ProcessorService.GeneratorEventHandler GeneratorEventHandler;
 
         public async Task Generate(int batchId, int totalNumberToGenerate)
@@ -32,6 +40,9 @@ namespace BDWebAPI.Worker
             return Task.Run(() =>
              {
                  int generatedNumber = GenerateNumber();
+
+                 _logger.LogInformation("Batch Id: ="+ batchId + "Generated No: ="+ generatedNumber);
+
                  Task.Delay(5000).Wait();
 
                  ProcessorEventArgs generatorEventArgs = new ProcessorEventArgs
