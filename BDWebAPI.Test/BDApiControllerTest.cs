@@ -3,7 +3,7 @@ using Xunit;
 
 namespace BDWebAPI.Test
 {
-    public class UnitTest1
+    public class BaseToDoControllerTest
     {
         [Fact]
         public void Test1()
