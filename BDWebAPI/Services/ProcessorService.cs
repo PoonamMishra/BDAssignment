@@ -44,8 +44,7 @@ namespace BDWebAPI.Services
             _multiplierManager.MultiplierEventHandler += MultiplierCallback;
         }
 
-
-
+        
         public async Task<IEnumerable<Batch>> GetCurrentState(int? groupId = null)
         {
             groupId = groupId == null ? GroupId : groupId;
@@ -95,10 +94,12 @@ namespace BDWebAPI.Services
 
         public void MultiplierCallback(object sender, ProcessorEventArgs args)
         {
+            
+
             lock (pblock)
             {
 
-                var dbBatch = GetBatches(args.BatchId);
+                var dbBatch = _batchRepository.GetBatches(args.BatchId, GroupId);
 
 
                 if (dbBatch != null)
@@ -107,7 +108,7 @@ namespace BDWebAPI.Services
                     dbBatch.Total += args.ComputedNumber;
                     dbBatch.TotalRemainingItem = --dbBatch.TotalRemainingItem;
                     dbBatch.TotalProcessedItem = ++dbBatch.TotalProcessedItem;
-                    SaveBatch(dbBatch, EntityState.Modified);
+                    _batchRepository.SaveBatch(dbBatch, EntityState.Modified);
                 }
                 else
                 {
@@ -120,39 +121,15 @@ namespace BDWebAPI.Services
                         TotalRemainingItem = ItemsPerBatch - 1,
                         TotalProcessedItem = 1
                     };
-                    SaveBatch(batch, EntityState.Added);
+                    _batchRepository.SaveBatch(batch, EntityState.Added);
                 }
 
             }
 
         }
 
-        private Batch GetBatches(int batchId)
-        {
-            Batch batch = null;
+       
 
-            using (var batchContext = new BatchContext())
-            {
-                var x = batchContext.Batches;
-                batch = batchContext.Batches.Where(batc => batc.BatchId.Equals(batchId) && batc.GroupId.Equals(GroupId)).FirstOrDefault();
-
-                _logger.LogDebug("Finished Getting Batch...");
-            }
-
-            return batch;
-        }
-
-        private void SaveBatch(Batch batch, EntityState entityState)
-        {
-            using var batchContext = new BatchContext();
-            batchContext.Entry(batch).State = entityState;
-
-            _logger.LogDebug("Start SaveBatch...");
-
-
-            int x = (batchContext.SaveChanges());
-
-            _logger.LogDebug("Finished SaveBatch...");
-        }
+       
     }
 }

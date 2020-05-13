@@ -1,4 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using BDWebAPI.Models.Entities;
+using BDWebAPI.Services;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
 using System.Linq.Expressions;
@@ -9,10 +12,14 @@ namespace BDWebAPI.ApiContext.Repository
     public abstract class Repository<T> : IRepository<T> where T : class
     {
         protected RepositoryContext RepositoryContext { get; set; }
+        private readonly ILogger<Repository<T>> _logger;
 
-        public Repository(RepositoryContext repositoryContext)
+
+        public Repository(RepositoryContext repositoryContext, ILogger<Repository<T>> logger)
         {
             this.RepositoryContext = repositoryContext;
+            this._logger = logger;
+
         }
 
 
@@ -38,7 +45,7 @@ namespace BDWebAPI.ApiContext.Repository
 
         public void Update(T entity)
         {
-           this.RepositoryContext.Set<T>().Update(entity);
+            this.RepositoryContext.Set<T>().Update(entity);
         }
 
         public void Delete(T entity)
@@ -48,7 +55,34 @@ namespace BDWebAPI.ApiContext.Repository
 
         public async Task Save()
         {
-           await this.RepositoryContext.SaveChangesAsync();
+            await this.RepositoryContext.SaveChangesAsync();
+        }
+
+        public void SaveBatch(Batch batch, EntityState entityState)
+        {
+            using var batchContext = new BatchContext();
+            batchContext.Entry(batch).State = entityState;
+
+            _logger.LogDebug("Start SaveBatch...");
+
+            int x = (batchContext.SaveChanges());
+
+            _logger.LogDebug("Finished SaveBatch...");
+        }
+
+        public Batch GetBatches(int batchId, int groupId)
+        {
+            Batch batch = null;
+
+            using (var batchContext = new BatchContext())
+            {
+                var x = batchContext.Batches;
+                batch = batchContext.Batches.Where(batc => batc.BatchId.Equals(batchId) && batc.GroupId.Equals(groupId)).FirstOrDefault();
+
+                _logger.LogDebug("Finished Getting Batch...");
+            }
+
+            return batch;
         }
     }
 }

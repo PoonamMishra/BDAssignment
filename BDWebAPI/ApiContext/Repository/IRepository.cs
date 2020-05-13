@@ -1,4 +1,6 @@
-﻿using System;
+﻿using BDWebAPI.Models.Entities;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -13,5 +15,8 @@ namespace BDWebAPI.ApiContext.Repository
         void Update(T entity);
         void Delete(T entity);
         Task Save();
+
+        void SaveBatch(Batch batch, EntityState entityState);
+        Batch GetBatches(int batchId, int groupId);
     }
 }
