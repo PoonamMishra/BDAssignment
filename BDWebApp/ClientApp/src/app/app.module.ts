@@ -6,7 +6,6 @@ import { RouterModule } from '@angular/router';
 
 import { AppComponent } from './app.component';
 import { NavMenuComponent } from './nav-menu/nav-menu.component';
-import { FetchDataComponent } from './fetch-data/fetch-data.component';
 import { BatchComponent } from './batch/batch.component';
 import { PreviousBatchComponent } from './batch/previous-batch.component';
 import { BatchDetailsComponent } from './batch/batch-details.component';
@@ -16,7 +15,6 @@ import { BatchDetailsComponent } from './batch/batch-details.component';
   declarations: [
     AppComponent,
     NavMenuComponent,
-    FetchDataComponent,
     BatchComponent,
     PreviousBatchComponent,
     BatchDetailsComponent
