@@ -1,5 +1,3 @@
-using System;
-
 namespace BDWebAPI.Models
 {
     public class BatchInput

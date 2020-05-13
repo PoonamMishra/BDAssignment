@@ -1,12 +1,7 @@
-﻿using BDWebAPI.Controllers;
-using BDWebAPI.Models;
+﻿using BDWebAPI.Models;
 using BDWebAPI.Models.Entities;
-using BDWebAPI.Services;
-using Microsoft.Extensions.Logging;
-using Moq;
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace BDWebAPI.Test
 {

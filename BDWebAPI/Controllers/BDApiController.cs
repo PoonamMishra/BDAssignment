@@ -1,16 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.ComponentModel.Design;
-using System.Linq;
-using System.Reflection.Metadata.Ecma335;
-using System.Runtime.InteropServices.ComTypes;
-using System.Threading.Tasks;
-using BDWebAPI.Models;
-using BDWebAPI.Models.Entities;
+﻿using BDWebAPI.Models;
 using BDWebAPI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Threading.Tasks;
 
 namespace BDWebAPI.Controllers
 {
@@ -50,7 +43,7 @@ namespace BDWebAPI.Controllers
         {
             try
             {
-                
+
 
                 if (input == null)
                 {
@@ -76,7 +69,7 @@ namespace BDWebAPI.Controllers
 
             var batches = await _processorService.GetCurrentState(groupId);
 
-            
+
 
             var response = new BatchOutput()
             {

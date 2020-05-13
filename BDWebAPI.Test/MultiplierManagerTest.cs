@@ -5,16 +5,13 @@ using BDWebAPI.Worker;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Moq;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
 namespace BDWebAPI.Test
 {
-    public class  MultiplierManagerTest : UnitTestData
+    public class MultiplierManagerTest : UnitTestData
     {
         protected readonly ProcessorService ProcessorServiceUnderTest;
 

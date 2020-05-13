@@ -1,5 +1,4 @@
 using BDWebAPI.Models.Entities;
-using System;
 using System.Collections.Generic;
 
 namespace BDWebAPI.Models

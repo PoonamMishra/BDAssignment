@@ -1,14 +1,10 @@
 ﻿using BDWebAPI.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace BDWebAPI.ApiContext.Repository
 {
-    
+
     public class BatchContext : DbContext
     {
         public static IConfigurationRoot Configuration { get; set; }
