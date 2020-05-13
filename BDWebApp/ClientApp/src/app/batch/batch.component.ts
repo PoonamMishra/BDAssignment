@@ -1,9 +1,8 @@
 import { OnInit, Component, OnDestroy } from '@angular/core';
-import { interval } from 'rxjs/internal/observable/interval';
-import { startWith, switchMap, takeWhile } from "rxjs/operators";
+import { switchMap } from "rxjs/operators";
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { RangeValidator } from '../custom-validators/range.validator';
-import { IBatchOutput, IBatch } from './batch';
+import { IBatch } from './batch';
 import { BatchService } from './batch.service';
 import { timer } from 'rxjs/internal/observable/timer';
 import { Router } from '@angular/router';
@@ -12,9 +11,7 @@ import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-batch-component',
-  templateUrl: './batch.component.html',
-  styleUrls: ['./batch.component.css'],
-
+  templateUrl: './batch.component.html'
 })
 
 
@@ -23,9 +20,6 @@ export class BatchComponent implements OnInit, OnDestroy {
   batchInputForm: FormGroup;
   submitted = false;
   pollingData: any;
-  value: any = "";
-  pollingFreq: number;
-  pollingCount: number;
   batchList: IBatch[];
   startButtonClicked = false;
   isProcessCompleted = true;
@@ -51,9 +45,8 @@ export class BatchComponent implements OnInit, OnDestroy {
 
     this.getCurrentGroupId();
 
-   
-  }
 
+  }
 
 
   setShowPreviousBatch(groupId) {
@@ -66,51 +59,20 @@ export class BatchComponent implements OnInit, OnDestroy {
     return (!this.batchInputForm.valid || !this.isProcessCompleted);
   }
 
-
   enablePreviousBatch(): boolean {
     return !this.isProcessCompleted;
   }
 
-
-  pollValues(): any {
-
-    //let params  = { groupId: this.currentGroupId, batchSize: this.batchInputForm.get('batchSize').value };
-
-    let params = { batchSize: this.batchInputForm.get('batchSize').value };
-
-    this.pollingData = timer(0, 3000)
-      .pipe(
-        switchMap(batchOutputResult => this.batchService.getBatches(params))
-      )
-      .subscribe(
-        res => {
-          this.batchList = res.batchList;
-          if (res.isProcessCompleted) {
-            this.submitted = false;
-            this.isProcessCompleted = true;
-            this.pollingData.unsubscribe();
-
-          }
-          this.setShowPreviousBatch(res.currentGroupId)
-        
-        },
-        error => {
-          console.log("Error", error);
-        }
-      );
-  }
-
   toggleButtonText() {
     return this.isProcessCompleted === true ? 'Start' : 'Processing';
-        
+
   }
 
   onPreviousAction() {
     this.router.navigate(['/previous-batch'])
       .then(success => console.log('navigation success?', success))
       .catch(console.error);
-  } 
-
+  }
 
   getCurrentGroupId() {
     this.batchService.getCurrentGroupId()
@@ -126,13 +88,7 @@ export class BatchComponent implements OnInit, OnDestroy {
 
   }
 
-  ngOnDestroy() {
-    this.batchList = [];
-    if (this.pollingData != null) {
-      this.pollingData.unsubscribe();
-    }
-  }
-
+  
   // convenience getter for easy access to form fields
   get f() { return this.batchInputForm.controls; }
 
@@ -152,16 +108,13 @@ export class BatchComponent implements OnInit, OnDestroy {
 
     
   }
- 
 
   processBatch() {
-       
-
     let params = {
       batchSize: this.batchInputForm.get('batchSize').value,
       itemsPerBatch: this.batchInputForm.get('itemsPerBatch').value
     };
-   
+
     this.batchService.processBatch(params)
       .subscribe(
         data => {
@@ -176,11 +129,38 @@ export class BatchComponent implements OnInit, OnDestroy {
 
   }
 
-  intiatePolling() {
-    this.batchList = [];
-    this.startButtonClicked = true;
-    this.pollValues();
+  pollValues(): any {
 
+    //let params  = { groupId: this.currentGroupId, batchSize: this.batchInputForm.get('batchSize').value };
+
+    let params = { batchSize: this.batchInputForm.get('batchSize').value };
+
+    this.pollingData = timer(0, 3000)
+      .pipe(
+        switchMap(() => this.batchService.getBatches(params))
+      )
+      .subscribe(
+        res => {
+          this.batchList = res['BatchList'];
+          if (res['IsProcessCompleted']) {
+            this.submitted = false;
+            this.isProcessCompleted = true;
+            this.pollingData.unsubscribe();
+
+          }
+          this.setShowPreviousBatch(res['CurrentGroupId']);
+
+        },
+        error => {
+          console.log("Error", error);
+        }
+      );
   }
 
+  ngOnDestroy() {
+    this.batchList = [];
+    if (this.pollingData != null) {
+      this.pollingData.unsubscribe();
+    }
+  }
 }

@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { FormGroup } from '@angular/forms';
 import { IBatch } from './batch';
 import { BatchService } from './batch.service';
 
@@ -7,7 +6,7 @@ import { BatchService } from './batch.service';
 
 @Component({
   selector: 'app-previous-batch-component',
-  templateUrl: './previous.batch.component.html'
+  templateUrl: './previous-batch.component.html'
 
 
 })
@@ -25,17 +24,6 @@ export class PreviousBatchComponent  {
   ngOnInit() {
     this.previousBatchClick();
   }
-
-
-  //disableStart(): boolean {
-  //  return (!this.batchInputForm.valid && !this.isProcessCompleted);
-  //}
-
-
-  //toggleButtonText() {
-
-  //  return (this.submitted === false && this.isProcessCompleted === false) || this.isProcessCompleted === true ? 'Start' : 'Processing';
-  //}
 
 
 

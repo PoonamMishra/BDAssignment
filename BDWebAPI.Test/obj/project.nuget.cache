@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "C+Mog4iF8CmuS4HDEDHLmP9yW3pwynyCKgbrc4dM7HGjzwZmKSgaSjKg9Ba0kEGCaBBC1Rcul51MhJdmysIv0g==",
+  "dgSpecHash": "CD9JHNCkVcY0mZj8kOvRD9t3gh+YbhB/pifB7Fo8dgBE+g/SPrW7OG/6w+cduQWoLpUTYWjpYtPRHvgFxh4zcg==",
   "success": true,
   "projectFilePath": "C:\\Poonam\\BDAsyncServiceAssessment\\BDWebAPI.Test\\BDWebAPI.Test.csproj",
   "expectedPackageFiles": [
@@ -37,6 +37,7 @@
     "C:\\Users\\xsmishrapo\\.nuget\\packages\\microsoft.testplatform.testhost\\16.5.0\\microsoft.testplatform.testhost.16.5.0.nupkg.sha512",
     "C:\\Users\\xsmishrapo\\.nuget\\packages\\microsoft.win32.primitives\\4.3.0\\microsoft.win32.primitives.4.3.0.nupkg.sha512",
     "C:\\Users\\xsmishrapo\\.nuget\\packages\\moq\\4.14.1\\moq.4.14.1.nupkg.sha512",
+    "C:\\Users\\xsmishrapo\\.nuget\\packages\\moqexpression\\2.0.0\\moqexpression.2.0.0.nupkg.sha512",
     "C:\\Users\\xsmishrapo\\.nuget\\packages\\netstandard.library\\1.6.1\\netstandard.library.1.6.1.nupkg.sha512",
     "C:\\Users\\xsmishrapo\\.nuget\\packages\\newtonsoft.json\\9.0.1\\newtonsoft.json.9.0.1.nupkg.sha512",
     "C:\\Users\\xsmishrapo\\.nuget\\packages\\nuget.frameworks\\5.0.0\\nuget.frameworks.5.0.0.nupkg.sha512",

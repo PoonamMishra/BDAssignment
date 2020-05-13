@@ -12,7 +12,7 @@
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
-      "launchUrl": "/api/batchstate",
+      "launchUrl": "api/batch/state",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
@@ -20,7 +20,7 @@
     "BDWebAPI": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "/api/batchstate",
+      "launchUrl": "api/batch/state",
       "applicationUrl": "http://localhost:5000",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"

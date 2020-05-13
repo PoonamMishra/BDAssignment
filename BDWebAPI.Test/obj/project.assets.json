@@ -626,6 +626,18 @@
           "lib/netstandard2.0/Moq.dll": {}
         }
       },
+      "MoqExpression/2.0.0": {
+        "type": "package",
+        "dependencies": {
+          "Moq": "4.13.1"
+        },
+        "compile": {
+          "lib/netstandard2.0/MoqExpression.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard2.0/MoqExpression.dll": {}
+        }
+      },
       "NETStandard.Library/1.6.1": {
         "type": "package",
         "dependencies": {
@@ -2927,6 +2939,20 @@
         "lib/netstandard2.0/Moq.xml",
         "moq.4.14.1.nupkg.sha512",
         "moq.nuspec"
+      ]
+    },
+    "MoqExpression/2.0.0": {
+      "sha512": "chOeY1WU2OQXCcLW1GteffQ94kQtmP8CxSUzH747Fcn2y/ALWgTXQsvY2Ba9AIhsksWe0vAhQo9ePCzeJ5Ls7Q==",
+      "type": "package",
+      "path": "moqexpression/2.0.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE.txt",
+        "icon.png",
+        "lib/netstandard2.0/MoqExpression.dll",
+        "moqexpression.2.0.0.nupkg.sha512",
+        "moqexpression.nuspec"
       ]
     },
     "NETStandard.Library/1.6.1": {
@@ -6949,6 +6975,7 @@
       "BDWebAPI >= 1.0.0",
       "Microsoft.NET.Test.Sdk >= 16.5.0",
       "Moq >= 4.14.1",
+      "MoqExpression >= 2.0.0",
       "coverlet.collector >= 1.2.0",
       "xunit >= 2.4.0",
       "xunit.runner.visualstudio >= 2.4.0"
@@ -7002,6 +7029,10 @@
           "Moq": {
             "target": "Package",
             "version": "[4.14.1, )"
+          },
+          "MoqExpression": {
+            "target": "Package",
+            "version": "[2.0.0, )"
           },
           "coverlet.collector": {
             "target": "Package",

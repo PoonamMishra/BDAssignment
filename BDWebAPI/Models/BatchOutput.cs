@@ -10,11 +10,9 @@ namespace BDWebAPI.Models
         {
             BatchList = new List<Batch>();
         }
-        public int GroupBatchId { get; set; }
+        public int CurrentGroupId { get; set; }
 
-        public List<Batch> BatchList { get; set; }
-
-        public int Total { get; set; }
+        public IEnumerable<Batch> BatchList { get; set; }
 
         public bool IsProcessCompleted { get; set; }
 

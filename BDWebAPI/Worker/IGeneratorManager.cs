@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BDWebAPI.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,6 +13,8 @@ namespace BDWebAPI.Worker
 
         Task Generate(int batchId, int totalNumberToGenerate);
 
+        Task GetGenerateNumberTask(int batchId);
 
+        void OnNumberGeneration(ProcessorEventArgs generatorEventArgs);
     }
 }

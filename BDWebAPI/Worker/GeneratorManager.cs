@@ -35,7 +35,7 @@ namespace BDWebAPI.Worker
             await Task.WhenAll(myTask);
         }
 
-        private Task GetGenerateNumberTask(int batchId)
+        public Task GetGenerateNumberTask(int batchId)
         {
             return Task.Run(() =>
              {
@@ -56,13 +56,13 @@ namespace BDWebAPI.Worker
 
         }
 
-        void OnNumberGeneration(ProcessorEventArgs generatorEventArgs)
+        public void OnNumberGeneration(ProcessorEventArgs generatorEventArgs)
         {
             GeneratorEventHandler?.Invoke(this, generatorEventArgs);
         }
 
 
-        private int GenerateNumber()
+        public int GenerateNumber()
         {
             Random randObj = new Random();
             return randObj.Next(1, 101);

@@ -50,7 +50,7 @@ namespace BDWebAPI.Controllers
         {
             try
             {
-                //BatchInput batchInput = new BatchInput() { BatchCount = 2, ItemsPerBatch = 2 };
+                
 
                 if (input == null)
                 {
@@ -69,18 +69,20 @@ namespace BDWebAPI.Controllers
             }
         }
 
-        [HttpGet("/api/batch/state")]
-        public async Task<IActionResult> Get()
+        [HttpGet("/api/batch/state/{groupId?}")]
+        public async Task<ActionResult<BatchOutput>> GetCurrentState(int? groupId = null)
         {
 
 
-            var batches = await _processorService.GetCurrentState();
+            var batches = await _processorService.GetCurrentState(groupId);
 
-            var response = new
+            
+
+            var response = new BatchOutput()
             {
-                isProcessCompleted = ProcessorService.IsProcessCompleted,
-                currentGroupId = ProcessorService.GroupId,
-                batchList = batches
+                IsProcessCompleted = ProcessorService.IsProcessCompleted,
+                CurrentGroupId = ProcessorService.GroupId,
+                BatchList = batches
             };
 
             return Ok(response);

@@ -15,5 +15,7 @@ namespace BDWebAPI.Services
 
         Task PerformeCalculation(BatchInput input);
         Task<IEnumerable<Batch>> GetAllBatches();
+
+        void GeneratorCallback(object sender, ProcessorEventArgs args);
     }
 }

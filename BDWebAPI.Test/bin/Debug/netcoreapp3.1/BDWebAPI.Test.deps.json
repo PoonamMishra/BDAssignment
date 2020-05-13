@@ -11,6 +11,7 @@
           "BDWebAPI": "1.0.0",
           "Microsoft.NET.Test.Sdk": "16.5.0",
           "Moq": "4.14.1",
+          "MoqExpression": "2.0.0",
           "coverlet.collector": "1.2.0",
           "xunit": "2.4.0",
           "xunit.runner.visualstudio": "2.4.0"
@@ -541,6 +542,17 @@
           "lib/netstandard2.0/Moq.dll": {
             "assemblyVersion": "4.14.0.0",
             "fileVersion": "4.14.1.0"
+          }
+        }
+      },
+      "MoqExpression/2.0.0": {
+        "dependencies": {
+          "Moq": "4.14.1"
+        },
+        "runtime": {
+          "lib/netstandard2.0/MoqExpression.dll": {
+            "assemblyVersion": "2.0.0.0",
+            "fileVersion": "2.0.0.0"
           }
         }
       },
@@ -1630,6 +1642,13 @@
       "sha512": "sha512-yRrU+cLNBtZpL9eLVyicOENMPUx7DjOOB+VPgDhrXaCjhfob661d4HJ82YJpPUBmlYoivNA8F4R+NIMfoKbD7g==",
       "path": "moq/4.14.1",
       "hashPath": "moq.4.14.1.nupkg.sha512"
+    },
+    "MoqExpression/2.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-chOeY1WU2OQXCcLW1GteffQ94kQtmP8CxSUzH747Fcn2y/ALWgTXQsvY2Ba9AIhsksWe0vAhQo9ePCzeJ5Ls7Q==",
+      "path": "moqexpression/2.0.0",
+      "hashPath": "moqexpression.2.0.0.nupkg.sha512"
     },
     "NETStandard.Library/1.6.1": {
       "type": "package",

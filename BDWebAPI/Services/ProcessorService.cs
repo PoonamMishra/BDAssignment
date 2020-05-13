@@ -90,9 +90,6 @@ namespace BDWebAPI.Services
 
         }
 
-
-
-
         public void GeneratorCallback(object sender, ProcessorEventArgs args)
         {
 
