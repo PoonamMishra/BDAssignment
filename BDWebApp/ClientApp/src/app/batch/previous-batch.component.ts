@@ -14,7 +14,7 @@ import { BatchService } from './batch.service';
 export class PreviousBatchComponent  {
 
   batchList: IBatch[];
-
+  loadCompleted: boolean = false;
 
   constructor(
       private batchService: BatchService) {
@@ -37,8 +37,9 @@ export class PreviousBatchComponent  {
         },
         error => {
           console.log("Error", error);
-        }
-      );
+        },
+        () => this.loadCompleted = true
+      )
 
   }
 
